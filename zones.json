@@ -1,0 +1,1750 @@
+[
+    {
+        "id": 1,
+        "name": "Aetherian Archive",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 1,
+                "name": "Lightning Storm Atronach"
+            },
+            {
+                "id": 2,
+                "name": "Foundation Stone Atronach"
+            },
+            {
+                "id": 3,
+                "name": "Varlariel"
+            },
+            {
+                "id": 4,
+                "name": "The Mage"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Hel Ra Citadel",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 5,
+                "name": "Ra Kotu"
+            },
+            {
+                "id": 6,
+                "name": "The Yokedas"
+            },
+            {
+                "id": 8,
+                "name": "The Warrior"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Sanctum Ophidia",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 9,
+                "name": "Possessed Mantikora"
+            },
+            {
+                "id": 10,
+                "name": "Stonebreaker"
+            },
+            {
+                "id": 11,
+                "name": "Ozara"
+            },
+            {
+                "id": 12,
+                "name": "The Serpent"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Maw of Lorkhaj",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 13,
+                "name": "Zhaj\u2019hassa The Forgotten"
+            },
+            {
+                "id": 14,
+                "name": "The Twins"
+            },
+            {
+                "id": 15,
+                "name": "Rakkhat"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "The Halls of Fabrication",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 16,
+                "name": "The Hunter Killers"
+            },
+            {
+                "id": 17,
+                "name": "Pinnacle Factotum"
+            },
+            {
+                "id": 18,
+                "name": "Archcustodian"
+            },
+            {
+                "id": 19,
+                "name": "The Refabrication Committee"
+            },
+            {
+                "id": 20,
+                "name": "Assembly General"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Asylum Sanctorium",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 21,
+                "name": "Saint Llothis the Pious"
+            },
+            {
+                "id": 22,
+                "name": "Saint Felms the Bold"
+            },
+            {
+                "id": 23,
+                "name": "Saint Olms the Just"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Cloudrest",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 24,
+                "name": "Shade of Galenwe"
+            },
+            {
+                "id": 25,
+                "name": "Shade of Relequen"
+            },
+            {
+                "id": 26,
+                "name": "Shade of Siroria"
+            },
+            {
+                "id": 27,
+                "name": "Z'Maja"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "name": "Arenas (Group)",
+        "frozen": true,
+        "encounters": [
+            {
+                "id": 1000,
+                "name": "Dragonstar Arena"
+            },
+            {
+                "id": 1001,
+                "name": "Blackrose Prison"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "name": "Dungeons",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 2000,
+                "name": "Fungal Grotto I"
+            },
+            {
+                "id": 2001,
+                "name": "Fungal Grotto II"
+            },
+            {
+                "id": 2002,
+                "name": "Spindleclutch I"
+            },
+            {
+                "id": 2003,
+                "name": "Spindleclutch II"
+            },
+            {
+                "id": 2004,
+                "name": "The Banished Cells I"
+            },
+            {
+                "id": 2005,
+                "name": "The Banished Cells II"
+            },
+            {
+                "id": 2006,
+                "name": "Darkshade Caverns I"
+            },
+            {
+                "id": 2007,
+                "name": "Darkshade Caverns II"
+            },
+            {
+                "id": 2008,
+                "name": "Elden Hollow I"
+            },
+            {
+                "id": 2009,
+                "name": "Elden Hollow II"
+            },
+            {
+                "id": 2010,
+                "name": "Wayrest Sewers I"
+            },
+            {
+                "id": 2011,
+                "name": "Wayrest Sewers II"
+            },
+            {
+                "id": 2012,
+                "name": "Arx Corinium"
+            },
+            {
+                "id": 2013,
+                "name": "City of Ash I"
+            },
+            {
+                "id": 2014,
+                "name": "City of Ash II"
+            },
+            {
+                "id": 2015,
+                "name": "Crypt of Hearts I"
+            },
+            {
+                "id": 2016,
+                "name": "Crypt of Hearts II"
+            },
+            {
+                "id": 2017,
+                "name": "Direfrost Keep"
+            },
+            {
+                "id": 2018,
+                "name": "Tempest Island"
+            },
+            {
+                "id": 2019,
+                "name": "Volenfell"
+            },
+            {
+                "id": 2020,
+                "name": "Blackheart Haven"
+            },
+            {
+                "id": 2021,
+                "name": "Blessed Crucible"
+            },
+            {
+                "id": 2022,
+                "name": "Selene's Web"
+            },
+            {
+                "id": 2023,
+                "name": "Vaults of Madness"
+            },
+            {
+                "id": 2024,
+                "name": "Bloodroot Forge"
+            },
+            {
+                "id": 2025,
+                "name": "Cradle of Shadows"
+            },
+            {
+                "id": 2026,
+                "name": "Falkreath Hold"
+            },
+            {
+                "id": 2027,
+                "name": "Fang Lair"
+            },
+            {
+                "id": 2028,
+                "name": "Imperial City Prison"
+            },
+            {
+                "id": 2029,
+                "name": "March of Sacrifices"
+            },
+            {
+                "id": 2030,
+                "name": "Moon Hunter Keep"
+            },
+            {
+                "id": 2031,
+                "name": "Ruins of Mazzatun"
+            },
+            {
+                "id": 2032,
+                "name": "Scalecaller Peak"
+            },
+            {
+                "id": 2033,
+                "name": "White-Gold Tower"
+            },
+            {
+                "id": 2034,
+                "name": "Depths of Malatar"
+            },
+            {
+                "id": 2035,
+                "name": "Frostvault"
+            },
+            {
+                "id": 2036,
+                "name": "Moongrave Fane"
+            },
+            {
+                "id": 2037,
+                "name": "Lair of Maarselok"
+            },
+            {
+                "id": 2038,
+                "name": "Icereach"
+            },
+            {
+                "id": 2039,
+                "name": "Unhallowed Grave"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "name": "Maelstrom Arena",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 3000,
+                "name": "Vale of the Surreal"
+            },
+            {
+                "id": 3001,
+                "name": "Seht's Balcony"
+            },
+            {
+                "id": 3002,
+                "name": "Drome of Toxic Shock"
+            },
+            {
+                "id": 3003,
+                "name": "Seht's Flywheel"
+            },
+            {
+                "id": 3004,
+                "name": "Rink of Frozen Blood"
+            },
+            {
+                "id": 3005,
+                "name": "Spiral Shadows"
+            },
+            {
+                "id": 3006,
+                "name": "Vault of Umbrage"
+            },
+            {
+                "id": 3007,
+                "name": "Igneous Cistern"
+            },
+            {
+                "id": 3008,
+                "name": "Theater of Despair"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Sunspire",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 43,
+                "name": "Lokkestiiz"
+            },
+            {
+                "id": 44,
+                "name": "Yolnahkriin"
+            },
+            {
+                "id": 45,
+                "name": "Nahviintaas"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "name": "Iron Atronach",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 3009,
+                "name": "Iron Atronach"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "name": "Kyne's Aegis",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 46,
+                "name": "Yandir the Butcher"
+            },
+            {
+                "id": 47,
+                "name": "Captain Vrol"
+            },
+            {
+                "id": 48,
+                "name": "Lord Falgravn"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "name": "Rockgrove",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 49,
+                "name": "Oaxiltso"
+            },
+            {
+                "id": 50,
+                "name": "Flame-Herald Bahsei"
+            },
+            {
+                "id": 51,
+                "name": "Xalvakka"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "name": "Dreadsail Reef",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 52,
+                "name": "Lylanar and Turlassil"
+            },
+            {
+                "id": 53,
+                "name": "Reef Guardian"
+            },
+            {
+                "id": 54,
+                "name": "Tideborn Taleria"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "name": "Sanity's Edge",
+        "frozen": false,
+        "encounters": [
+            {
+                "id": 55,
+                "name": "Exarchanic Yaseyla"
+            },
+            {
+                "id": 56,
+                "name": "Archwizard Twelvane and Chimera"
+            },
+            {
+                "id": 57,
+                "name": "Ansuul the Tormentor"
+            }
+        ],
+        "partitions": [
+            {
+                "name": "Elsweyr (Update 22)",
+                "compact": "U22"
+            },
+            {
+                "name": "Scalebreaker (Update 23)",
+                "compact": "U23"
+            },
+            {
+                "name": "Dragonhold (Update 24)",
+                "compact": "U24"
+            },
+            {
+                "name": "Harrowstorm (Update 25)",
+                "compact": "U25"
+            },
+            {
+                "name": "Greymoor (Update 26)",
+                "compact": "U26"
+            },
+            {
+                "name": "Stonethorn (Update 27)",
+                "compact": "U27"
+            },
+            {
+                "name": "Markarth (Update 28)",
+                "compact": "U28"
+            },
+            {
+                "name": "Flames of Ambition (Update 29)",
+                "compact": "U29"
+            },
+            {
+                "name": "Blackwood (Update 30)",
+                "compact": "U30"
+            },
+            {
+                "name": "Waking Flame (Update 31)",
+                "compact": "U31"
+            },
+            {
+                "name": "Deadlands (Update 32)",
+                "compact": "U32"
+            },
+            {
+                "name": "Ascending Tide (Update 33)",
+                "compact": "U33"
+            },
+            {
+                "name": "High Isle (Update 34)",
+                "compact": "U34"
+            },
+            {
+                "name": "Lost Depths (Update 35)",
+                "compact": "U35"
+            },
+            {
+                "name": "Firesong (Update 36)",
+                "compact": "U36"
+            },
+            {
+                "name": "Scribes of Fate (Update 37)",
+                "compact": "U37"
+            },
+            {
+                "name": "Necrom (Update 38)",
+                "compact": "U38"
+            },
+            {
+                "name": "Update 39",
+                "compact": "U39"
+            },
+            {
+                "name": "Update 40",
+                "compact": "U40",
+                "default": true
+            }
+        ]
+    }
+]
