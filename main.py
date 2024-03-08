@@ -166,7 +166,7 @@ class Fight:
 
     def __init__(self,fight_dict):
         if fight_dict.get('difficulty'): # is a boss
-            self.is_valid = True
+            self.type = 'boss'
             self.id = fight_dict['id']
             self.boss_id = fight_dict['boss']
             self.boss_name = fight_dict['name']
@@ -175,11 +175,14 @@ class Fight:
             self.difficulty_id = fight_dict['difficulty']
             self.assign_difficulty()
         else:
-            self.is_valid = False # trash pull
+            self.type = 'trash' # trash pull
         
     def is_final_boss(self):
-        if self.boss_id == self.zone.final_boss_id:
-            return True
+        if self.type == 'boss':
+            if self.boss_id == self.zone.final_boss_id:
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -210,7 +213,7 @@ class Fight:
             self.difficulty_suffix = '+3'
 
     def get_summary(self):
-        return f"Zone: {self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix} - {self.boss_name} (kill = {str(self.kill)})"
+        return f"@{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix} - {self.boss_name} (kill = {str(self.kill)})"
 
 
 class Log:
@@ -251,21 +254,11 @@ class Log:
             print(f'\nAnalyzing fights for the log {self.url} ({self.datetime_str}):')
             
         for fight in fights:
-            
-            if fight.get('difficulty') == None: # is a trash pull
+            fight_obj = Fight(fight)
+            if fight_obj.is_final_boss() and fight_obj.kill: # compare boss id and if last pull
+                last_pull_kills.append(fight_obj)
                 if VERBOSE:
-                    print(f'    (Trash pull found {fight})')
-                continue
-            else: 
-                fight_obj = Fight(fight)
-                if fight_obj.is_final_boss() and fight_obj.kill: # compare boss id and if last pull
-                    last_pull_kills.append(fight_obj)
-                    if VERBOSE:
-                        print(f'   Found successful last pull kill {fight_obj.get_summary()}')
-                else:
-                    if VERBOSE:
-                        print(f'    (Boss fight found {fight_obj.get_summary()}')
-                        
+                        print(f'   Found successful last pull kill: {fight_obj.get_summary()}')
         return last_pull_kills
         
 if __name__ == '__main__':
