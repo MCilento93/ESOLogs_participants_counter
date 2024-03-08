@@ -14,6 +14,7 @@ __pycache__
 scripts
 entities
 .upm
+.local/share/virtualenv/py_info/1
 
 # all log files
 *.log
