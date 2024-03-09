@@ -12,12 +12,14 @@
 
 
 ### IMPORTING
-import os, requests, json, datetime
+import os, requests, json, datetime, configparser
 from bs4 import BeautifulSoup
 
 
 ### GLOBALS
-API_KEY = os.environ['API_KEY']
+config = configparser.ConfigParser()
+config.read('config.ini')
+API_KEY = config['ESOLOGS']['API_KEY']
 VERBOSE = True
 
 
@@ -176,7 +178,8 @@ class Fight:
             self.assign_difficulty()
         else:
             self.type = 'trash' # trash pull
-        
+
+    @property   
     def is_final_boss(self):
         if self.type == 'boss':
             if self.boss_id == self.zone.final_boss_id:
@@ -212,9 +215,41 @@ class Fight:
             self.difficulty_prefix = 'v'
             self.difficulty_suffix = '+3'
 
+    @property
     def get_summary(self):
         return f"@{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix} - {self.boss_name} (kill = {str(self.kill)})"
 
+    @property
+    def name(self):
+        return f"{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix}"
+
+class Friendly:
+
+    def __init__(self,friend_dict):
+        
+        _type = friend_dict['type']
+        if _type in ['DragonKnight','Arcanist','Templar','Nightblade','Sorcerer','Warden','Necromancer']:
+            self.is_human = True
+            self.dict = friend_dict
+            self.class_ = _type
+            self.anonymous = friend_dict['anonymous']
+            self.username = friend_dict['displayName']
+            self.fights = self.get_fights_id()
+        else:
+            self.is_human = False
+
+    def get_fights_id(self):
+        list_fights_id = []
+        for fight in self.dict['fights']:
+            list_fights_id.append(fight['id'])
+        return list_fights_id
+    
+    def partecipated(self,fight_id):
+        if self.is_human and fight_id in self.fights:
+            return True
+        else:
+            return False
+            
 
 class Log:
     
@@ -229,38 +264,74 @@ class Log:
         else:
             self.is_valid = False
             self.json = None
+        self.owner = self.get_owner()
         self.datetime = self.get_datetime()
         self.datetime_str = self.datetime.strftime('%Y/%m/%d')
         self.title = self.get_title()
 
     def get_datetime(self):
         if self.is_valid:
-            start_UNIX = self.json['start']
+            start_UNIX = self.json['start'] # getting only the start time
             return datetime.datetime.fromtimestamp(int(start_UNIX)/1000) # datetime
 
     def get_title(self):
         if self.is_valid:
             return self.json['title']
             
+    def get_owner(self):
+        if self.is_valid:
+            return self.json['owner']
+        
     def get_last_pull_kills(self):
-
         if not self.is_valid:
             return []
-            
         fights = self.json['fights']
         last_pull_kills = []
-
         if VERBOSE:
             print(f'\nAnalyzing fights for the log {self.url} ({self.datetime_str}):')
-            
         for fight in fights:
             fight_obj = Fight(fight)
-            if fight_obj.is_final_boss() and fight_obj.kill: # compare boss id and if last pull
+            if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
                 last_pull_kills.append(fight_obj)
                 if VERBOSE:
-                        print(f'   Found successful last pull kill: {fight_obj.get_summary()}')
+                    print(f'   Found successful last pull kill: {fight_obj.get_summary}')
         return last_pull_kills
-        
+    
+    def get_human_friendlies(self):
+        if not self.is_valid:
+            return []
+        friendlies = self.json['friendlies']
+        human_friendlies = []
+        if VERBOSE:
+            print(f'\nAnalyzing friendlies for the log {self.url} ({self.datetime_str}):')
+        for friend in friendlies:
+            friend_obj = Friendly(friend)
+            if friend_obj.is_human and not friend_obj.anonymous:
+                human_friendlies.append(friend_obj)
+                if VERBOSE:
+                    print(f'   Found friend: {friend_obj.username}')
+        return human_friendlies
+    
+    def list_winners(self):
+        self.last_pull_kills = self.get_last_pull_kills()
+        self.human_friendlies = self.get_human_friendlies()
+        list_winners=[]
+        if VERBOSE:
+            print(f'\nLinking winners to last pull kills for the log {self.url} ({self.datetime_str}):')
+        for fight in self.last_pull_kills:
+            _humans = []
+            for human in self.human_friendlies:
+                if human.partecipated(fight.id):
+                    _humans.append(human)
+            # list_winners.append({'summary':f"{fight.name} by {[(a.username) for a in _humans]}",
+            list_winners.append({'summary':f"{fight.name} by {', '.join([a.username for a in _humans])}",
+                                 'fight':fight,
+                                 'partipants':_humans,})
+            if VERBOSE:
+                print(f"   Summary: {list_winners[-1]['summary']}")
+        return list_winners
+
+                    
 if __name__ == '__main__':
     
     # TEST 1: Get information on final trial bosses
@@ -278,11 +349,12 @@ if __name__ == '__main__':
     # no. 2 pull CR     https://www.esologs.com/reports/1BNtTCKAa9HQhGyq
     # no. 1 pull SS     https://www.esologs.com/reports/dZp6g1RhL3KTmJDt
     # no. 0 pull MOL    https://www.esologs.com/reports/2zt4PWF89A6qxcXn
+            
     log01 = Log('https://www.esologs.com/reports/1BNtTCKAa9HQhGyq')
-    log01.get_last_pull_kills()
-    
+    log01.list_winners()
+
     log02 = Log('https://www.esologs.com/reports/dZp6g1RhL3KTmJDt')
-    log02.get_last_pull_kills()
+    log02.list_winners()
 
     log03 = Log('https://www.esologs.com/reports/2zt4PWF89A6qxcXn')
-    log03.get_last_pull_kills()
+    log03.list_winners()
