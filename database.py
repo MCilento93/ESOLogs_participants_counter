@@ -30,8 +30,8 @@ vCR+0 https://www.esologs.com/reports/BjqH3RPkhAcVZ8NY#boss=-2&difficulty=0
     print(f"Urls from string: {urls}")
 
     # TEST 2: Scrape a local file
-    urls = extract_esologs_urls_from_local_file()
-    print(f"Urls from local.txt: {urls}")
+    # urls = extract_esologs_urls_from_local_file()
+    # print(f"Urls from local.txt: {urls}")
 
     # TEST 3: Scrape the corresponding esologs
     from esologs_parser import *

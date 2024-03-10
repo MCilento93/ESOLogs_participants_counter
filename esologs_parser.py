@@ -3,7 +3,7 @@
 #
 # Title: ESOlogs scraper by API V1
 # Date of creation: mar-2024
-
+#
 # Readocs API V1
 #   https://www.esologs.com/v1/docs/#!/Reports/reports_user_userName_get
 #
