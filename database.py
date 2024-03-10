@@ -1,3 +1,15 @@
+# -----------------------------------------------------------------------------
+# Copyright (C) 2024 - M. Cilento
+#
+# Title: database for ESOlogs participatns counter
+# Date of creation: mar-2024
+#
+# Description:
+#   The database of the project is developed in Google Sheet for the sake of
+#   future data manipulation simplicity.
+#
+# -----------------------------------------------------------------------------
+
 
 ### IMPORTING
 import re
@@ -34,6 +46,6 @@ vCR+0 https://www.esologs.com/reports/BjqH3RPkhAcVZ8NY#boss=-2&difficulty=0
     # print(f"Urls from local.txt: {urls}")
 
     # TEST 3: Scrape the corresponding esologs
-    from esologs_parser import *
+    from esologs_parser import Log
     for url in urls:
         Log(url).calculate_list_winners()

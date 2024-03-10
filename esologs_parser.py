@@ -4,15 +4,15 @@
 # Title: ESOlogs scraper by API V1
 # Date of creation: mar-2024
 #
-# Readocs API V1
+# Readocs API V1:
 #   https://www.esologs.com/v1/docs/#!/Reports/reports_user_userName_get
 #
 # Examples of requests:
-#   Zones (bosses id, see zones.json) 
+#   - Zones (final boss id, name) (downloaded version: zones.json) 
 #       https://www.esologs.com/v1/zones?api_key={API_KEY}
-#   Classes 
+#   - Classes
 #       https://www.esologs.com:443/v1/classes?api_key={API_KEY}
-#   Fights (@users, kill last boss, difficulties)
+#   - Fights (@username, last pull kills, difficulties)
 #       https://www.esologs.com/v1/report/fights/AjDv37CYqFynXpGc?api_key={API_KEY} 
 #
 # -----------------------------------------------------------------------------
@@ -31,49 +31,6 @@ VERBOSE = True
 
 
 ### CLASSES
-class Boss:
-  
-    def __init__(self,zone):
-        if   zone in ('Aetherian Archive','AA'):
-            self.id   = 4
-            self.name = 'The Mage'
-        elif zone in ('Hel Ra Citadel','HRC'):
-            self.id   = 8
-            self.name = 'The Warrior'
-        elif zone in ('Sanctum Ophidia','SO'):
-            self.id   = 12
-            self.name = 'The Serpent'
-        elif zone in ('Maw of Lorkhaj','MOL'):
-            self.id   = 15
-            self.name = 'Rakkhat'
-        elif zone in ('The Halls of Fabrication','HOF'):
-            self.id   = 20
-            self.name = 'Assembly General'
-        elif zone in ('Asylum Sanctorium','AS'):
-            self.id   = 23
-            self.name = 'Saint Olms the Just'
-        elif zone in ('Cloudrest','CR'):
-            self.id   = 27
-            self.name = "Z'Maja"
-        elif zone in ('Sunspire','SS'):
-            self.id   = 45
-            self.name = 'Nahviintaas'
-        elif zone in ("Kyne's Aegis",'KA'):
-            self.id   = 48
-            self.name = 'Lord Falgravn'
-        elif zone in ('Rockgrove','RG'):
-            self.id   = 51
-            self.name = 'Xalvakka'
-        elif zone in ('Dreadsail Reef','DSR'):
-            self.id   = 54
-            self.name = 'Tideborn Taleria'
-        elif zone in ("Sanity's Edge",'SE'):
-            self.id   = 57
-            self.name = 'Ansuul the Tormentor'
-        else:
-            self.id   = None
-            self.name = None
-        
 class Zone:
 
     @staticmethod
