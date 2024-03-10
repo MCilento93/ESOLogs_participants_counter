@@ -1,14 +1,21 @@
+# -----------------------------------------------------------------------------
+# Copyright (C) 2024 - M. Cilento
 #
-# ESOLOGS API V1 Readocs
-# ----------------------
-# https://www.esologs.com/v1/docs/#!/Reports/reports_user_userName_get
+# Title: ESOlogs scraper by API v1
+# Date of creation: mar-2024
+
+# Readocs API v1
+#   https://www.esologs.com/v1/docs/#!/Reports/reports_user_userName_get
 #
-# EXAMPLE OF REQUESTS
-# -------------------
-#     + Zones (bosses id, see zones.json)
-#     https://www.esologs.com/v1/zones?api_key={API_KEY}
-#     + Fights (@users, kill last boss, difficulties)
-#     https://www.esologs.com/v1/report/fights/AjDv37CYqFynXpGc?api_key={API_KEY} 
+# Examples of requests:
+#   Zones (bosses id, see zones.json) 
+#       https://www.esologs.com/v1/zones?api_key={API_KEY}
+#   Classes 
+#       https://www.esologs.com:443/v1/classes?api_key={API_KEY}
+#   Fights (@users, kill last boss, difficulties)
+#       https://www.esologs.com/v1/report/fights/AjDv37CYqFynXpGc?api_key={API_KEY} 
+#
+# -----------------------------------------------------------------------------
 
 
 ### IMPORTING
@@ -24,7 +31,7 @@ VERBOSE = True
 
 
 ### CLASSES
-class Boss():
+class Boss:
   
     def __init__(self,zone):
         if   zone in ('Aetherian Archive','AA'):
@@ -103,7 +110,6 @@ class Zone:
     def __init__(self,name):
         self.is_valid = True
         self.name = name                # string name of the zone (complete or abbreviated)
-                
         if   name in ('Aetherian Archive','AA'):
             self.name_short = 'AA'
             self.final_boss_id   = 4
@@ -163,7 +169,7 @@ class Zone:
             return True
         else:
             return False
-
+        
 class Fight:
 
     def __init__(self,fight_dict):
@@ -216,7 +222,7 @@ class Fight:
             self.difficulty_suffix = '+3'
 
     @property
-    def get_summary(self):
+    def summary(self):
         return f"@{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix} - {self.boss_name} (kill = {str(self.kill)})"
 
     @property
@@ -226,9 +232,10 @@ class Fight:
 class Friendly:
 
     def __init__(self,friend_dict):
-        
         _type = friend_dict['type']
-        if _type in ['DragonKnight','Arcanist','Templar','Nightblade','Sorcerer','Warden','Necromancer']:
+        if _type in ['DragonKnight','Arcanist','Templar',
+                     'Nightblade','Sorcerer','Warden',
+                     'Necromancer']: # see classes request via API v1
             self.is_human = True
             self.dict = friend_dict
             self.class_ = _type
@@ -244,12 +251,11 @@ class Friendly:
             list_fights_id.append(fight['id'])
         return list_fights_id
     
-    def partecipated(self,fight_id):
+    def partecipated_to(self,fight_id):
         if self.is_human and fight_id in self.fights:
             return True
         else:
-            return False
-            
+            return False  
 
 class Log:
     
@@ -294,7 +300,7 @@ class Log:
             if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
                 last_pull_kills.append(fight_obj)
                 if VERBOSE:
-                    print(f'   Found successful last pull kill: {fight_obj.get_summary}')
+                    print(f'   Found successful last pull kill: {fight_obj.summary}')
         return last_pull_kills
     
     def get_human_friendlies(self):
@@ -312,24 +318,24 @@ class Log:
                     print(f'   Found friend: {friend_obj.username}')
         return human_friendlies
     
-    def list_winners(self):
+    def calculate_list_winners(self):
         self.last_pull_kills = self.get_last_pull_kills()
         self.human_friendlies = self.get_human_friendlies()
         list_winners=[]
-        if VERBOSE:
-            print(f'\nLinking winners to last pull kills for the log {self.url} ({self.datetime_str}):')
+        print(f'\nCalculating winners (partecipants to a successful last pull kill) for the log {self.url} ({self.datetime_str}):')
         for fight in self.last_pull_kills:
             _humans = []
             for human in self.human_friendlies:
-                if human.partecipated(fight.id):
+                if human.partecipated_to(fight.id):
                     _humans.append(human)
-            # list_winners.append({'summary':f"{fight.name} by {[(a.username) for a in _humans]}",
-            list_winners.append({'summary':f"{fight.name} by {', '.join([a.username for a in _humans])}",
+            list_winners.append({'description':f"{fight.name} by {', '.join([a.username for a in _humans])}",
                                  'fight':fight,
                                  'partipants':_humans,})
-            if VERBOSE:
-                print(f"   Summary: {list_winners[-1]['summary']}")
-        return list_winners
+            print(f"   Summary: {list_winners[-1]['description']}")
+        
+        self.list_winners = list_winners
+        if self.list_winners == []:
+            print('   Not valid last pull kills found in this log')
 
                     
 if __name__ == '__main__':
@@ -351,10 +357,10 @@ if __name__ == '__main__':
     # no. 0 pull MOL    https://www.esologs.com/reports/2zt4PWF89A6qxcXn
             
     log01 = Log('https://www.esologs.com/reports/1BNtTCKAa9HQhGyq')
-    log01.list_winners()
+    log01.calculate_list_winners()
 
     log02 = Log('https://www.esologs.com/reports/dZp6g1RhL3KTmJDt')
-    log02.list_winners()
+    log02.calculate_list_winners()
 
     log03 = Log('https://www.esologs.com/reports/2zt4PWF89A6qxcXn')
-    log03.list_winners()
+    log03.calculate_list_winners()
