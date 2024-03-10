@@ -8,6 +8,8 @@ database/README_DB.txt
 database/ewallet.pem
 database/tnsnames.ora
 database/Wallet_CrownStoreDealsBotDB.zip
+local.txt
+output.txt
 
 # folders
 __pycache__

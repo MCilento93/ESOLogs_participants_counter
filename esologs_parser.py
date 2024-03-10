@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
 # Copyright (C) 2024 - M. Cilento
 #
-# Title: ESOlogs scraper by API v1
+# Title: ESOlogs scraper by API V1
 # Date of creation: mar-2024
 
-# Readocs API v1
+# Readocs API V1
 #   https://www.esologs.com/v1/docs/#!/Reports/reports_user_userName_get
 #
 # Examples of requests:
@@ -235,7 +235,7 @@ class Friendly:
         _type = friend_dict['type']
         if _type in ['DragonKnight','Arcanist','Templar',
                      'Nightblade','Sorcerer','Warden',
-                     'Necromancer']: # see classes request via API v1
+                     'Necromancer']: # see classes request via API V1
             self.is_human = True
             self.dict = friend_dict
             self.class_ = _type
@@ -337,7 +337,8 @@ class Log:
         if self.list_winners == []:
             print('   Not valid last pull kills found in this log')
 
-                    
+
+### MAIN           
 if __name__ == '__main__':
     
     # TEST 1: Get information on final trial bosses
@@ -351,7 +352,7 @@ if __name__ == '__main__':
         except:
             print(f'   This zone will not be analyzed: {zone}')
         
-    # TEST 2: Open log
+    # TEST 2: Open log & calculate winners
     # no. 2 pull CR     https://www.esologs.com/reports/1BNtTCKAa9HQhGyq
     # no. 1 pull SS     https://www.esologs.com/reports/dZp6g1RhL3KTmJDt
     # no. 0 pull MOL    https://www.esologs.com/reports/2zt4PWF89A6qxcXn
