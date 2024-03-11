@@ -28,7 +28,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 API_KEY = config['ESOLOGS']['API_KEY']
 VERBOSE = True
-
+INDENTATION = '  '
 
 ### CLASSES
 class Zone:
@@ -251,13 +251,15 @@ class Log:
         fights = self.json['fights']
         last_pull_kills = []
         if VERBOSE:
-            print(f'\nAnalyzing fights for the log {self.url} ({self.datetime_str}):')
+            print(f'\n{INDENTATION}Analyzing fights:')
         for fight in fights:
             fight_obj = Fight(fight)
             if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
                 last_pull_kills.append(fight_obj)
                 if VERBOSE:
-                    print(f'   Found successful last pull kill: {fight_obj.summary}')
+                    print(f'{INDENTATION*2}Found successful last pull kill: {fight_obj.summary}')
+        if last_pull_kills == []:
+            print(f'{INDENTATION*2}No fights found. Log skipped.')
         return last_pull_kills
     
     def get_human_friendlies(self):
@@ -266,20 +268,22 @@ class Log:
         friendlies = self.json['friendlies']
         human_friendlies = []
         if VERBOSE:
-            print(f'\nAnalyzing friendlies for the log {self.url} ({self.datetime_str}):')
+            print(f'\n{INDENTATION}Analyzing friendlies:')
         for friend in friendlies:
             friend_obj = Friendly(friend)
             if friend_obj.is_human and not friend_obj.anonymous:
                 human_friendlies.append(friend_obj)
                 if VERBOSE:
-                    print(f'   Found friend: {friend_obj.username}')
+                    print(f'{INDENTATION*2}Found friend: {friend_obj.username}')
         return human_friendlies
     
     def calculate_list_winners(self):
+        print(f'\n\n\nCalculating winners (partecipants to a successful last pull kill) for the log {self.url} ({self.datetime_str}):')
         self.last_pull_kills = self.get_last_pull_kills()
+        if self.last_pull_kills == []:
+            return
         self.human_friendlies = self.get_human_friendlies()
         list_winners=[]
-        print(f'\nCalculating winners (partecipants to a successful last pull kill) for the log {self.url} ({self.datetime_str}):')
         for fight in self.last_pull_kills:
             _humans = []
             for human in self.human_friendlies:
@@ -288,11 +292,11 @@ class Log:
             list_winners.append({'description':f"{fight.name} by {', '.join([a.username for a in _humans])}",
                                  'fight':fight,
                                  'partipants':_humans,})
-            print(f"   Summary: {list_winners[-1]['description']}")
+            print(f"\n{INDENTATION}Summary for this log: {list_winners[-1]['description']}")
         
         self.list_winners = list_winners
         if self.list_winners == []:
-            print('   Not valid last pull kills found in this log')
+            print(f"{INDENTATION}No last pull kills found in this log")
 
 
 ### MAIN           
