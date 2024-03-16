@@ -9,8 +9,6 @@ database/ewallet.pem
 database/tnsnames.ora
 database/Wallet_CrownStoreDealsBotDB.zip
 database/esologs-counter-39fdce6048e3.json
-local_assassins_2023-2024.txt
-output.txt
 
 # folders
 __pycache__
@@ -18,6 +16,7 @@ scripts
 entities
 .upm
 .local/share/virtualenv/py_info/1
+txt
 
 # all log files
 *.log

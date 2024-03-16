@@ -83,7 +83,7 @@ class Zone:
             self.name_short = 'MOL'
             self.final_boss_id   = 15
             self.final_boss_name = 'Rakkhat'
-        elif name in ('The Halls of Fabrication','HOF'):
+        elif name in ('Halls of Fabrication','HOF','The Halls of Fabrication'):
             self.name_short = 'HOF'
             self.final_boss_id   = 20
             self.final_boss_name = 'Assembly General'
@@ -164,7 +164,7 @@ class Fight:
         elif self.difficulty_id == 122:
             self.difficulty = 'Hard Mode'
             self.difficulty_prefix = 'v'
-            self.difficulty_suffix = 'HM'
+            self.difficulty_suffix = ' HM'
         elif self.difficulty_id == 123:
             self.difficulty = 'Veteran+1'
             self.difficulty_prefix = 'v'
@@ -281,6 +281,7 @@ class Log:
         print(f'\n\n\nCalculating winners (partecipants to a successful last pull kill) for the log {self.url} ({self.datetime_str}):')
         self.last_pull_kills = self.get_last_pull_kills()
         if self.last_pull_kills == []:
+            self.list_winners = []
             return
         self.human_friendlies = self.get_human_friendlies()
         list_winners=[]
@@ -291,7 +292,7 @@ class Log:
                     _humans.append(human)
             list_winners.append({'description':f"{fight.name} by {', '.join([a.username for a in _humans])}",
                                  'fight':fight,
-                                 'partipants':_humans,})
+                                 'participants':_humans,})
             print(f"\n{INDENTATION}Summary for this log: {list_winners[-1]['description']}")
         
         self.list_winners = list_winners
@@ -326,3 +327,6 @@ if __name__ == '__main__':
 
     log03 = Log('https://www.esologs.com/reports/2zt4PWF89A6qxcXn')
     log03.calculate_list_winners()
+
+    log04 = Log('https://www.esologs.com/reports/gVXtLRBqGQ12a8vP')
+    log04.calculate_list_winners()
