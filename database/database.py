@@ -1,8 +1,53 @@
-import gspread
+
+### IMPORTING
+import gspread, backoff
+import os, configparser, logging
+logger = logging.getLogger(__name__)
+
+
+### GLOBALS
+MODULE_DIR = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+SW_DIR=os.path.dirname(MODULE_DIR)
+LOGS_DIR=os.path.join(SW_DIR,'logs')
+config = configparser.ConfigParser()
+config.read(os.path.join(SW_DIR,'config.ini'))
+
+
+### METHODS
+
 
 gc = gspread.service_account(filename=r'C:\Users\mario\OneDrive\esologs-counter\database\esologs-counter-39fdce6048e3.json')
-sh = gc.open('esologs-counter') # spreadsheet
+
+
+sh = gc.open('esologs-counter-R01') # spreadsheet
 ws = sh.worksheet('rank') # worksheet
+
+
+
+def get_all_table(ws):
+    return ws.get_all_records() # va in errore se trova un alcune colonne di header vuote
+
+def update_cells(ws):
+    cells = []
+    cells.append(Cell(row=300, col=1, value='Row-1 -- Col-1'))
+    cells.append(Cell(row=1, col=50, value='nuova col'))
+    ws.update_cells(cells)
+
+import backoff
+@backoff.on_exception(backoff.expo,gspread.exceptions.APIError,max_time=80)
+def main():
+    logger.info('avviata la funzione')
+    try:
+        for i in range(0,500):
+            ws.update_cell(1, 1, i)
+    except:
+        logger.error('errore, va in backoff ')
+    
+
+
+
+
+
 
 def print_ws():
     print(ws.get_all_records())
@@ -46,3 +91,14 @@ def update_counter(usernames,fight_name,time_str):
             current_counter = 0
         ws.update_cell(row, col, current_counter+1)
         ws.update_cell(row,2,time_str)
+
+
+if __name__ == '__main__':
+
+    # Setting up logging for test phase
+    logpath=os.path.join(LOGS_DIR,'logfile_database.log')
+    logging.basicConfig(filename=logpath, 
+                    level=logging.INFO,
+                    format='%(asctime)s : %(levelname)s : %(name)s : %(message)s',
+                    datefmt='%Y/%m/%d %I:%M:%S')
+    logger.info('prova sa')

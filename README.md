@@ -7,8 +7,8 @@ The project is supposed to be implemented only for a local guild: large scale de
 Its raw architecture is herebelow sketched:
 * Routine that scrapes a local text file with copy-pasted chat messages containing esologs.com links:
 ```
-:: If txt/local.txt holds the link, run in the project folder
-python main.py from_local_file txt/local.txt
+:: If a txt holds the link, run in the project folder
+python main.py from_local_file local.txt
 ```
 * Google sheet database via [gspread](https://docs.gspread.org/en/latest/index.html) to store the output of the scrape
 * A discord bot that constantly keeps an eye on the eso-logs discord chat for new logs to scrape
@@ -17,11 +17,11 @@ python main.py from_local_file txt/local.txt
 It is highly recommended to store the console output when dealing with many historical logs.
 ```
 :: To write on a file the console output, run
-python main.py > txt/output.txt
+python main.py > output.txt
 :: or even
-python main.py from_local_file txt/local.txt > txt/output.txt
+python main.py from_local_file local.txt > output.txt
 ```
 Console output can be really helpful when dealing with high number of logs, since google API has limited number of requests (60 requests/min) and the process may take a while.
 
 ### License
-This repository is licensed under [MIT License](LICENSE) (c) 2023 GitHub, Inc.
+This repository is licensed under [MIT License](LICENSE) (c) 2024 GitHub, Inc.

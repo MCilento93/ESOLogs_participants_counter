@@ -22,7 +22,15 @@
 from esologs_parser import *
 from url_scraper import *
 from database.database import *
-import time, sys
+import time, sys, logging
+
+
+### LOGGER
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='logs/logfile.log', 
+                    level=logging.INFO,
+                    format='%(asctime)s : %(levelname)s : %(name)s : %(message)s',
+                    datefmt='%Y/%m/%d %I:%M:%S')
 
 
 ### METHODS
@@ -41,8 +49,8 @@ def load_logs_from_local_file(filepath):
 if __name__ == '__main__':
 
     args = sys.argv
-
     # MODE 1: load logs from local file
     if args[1] == 'from_local_file':
+        logger.debug('*** RUN PROCEDURE: Load logs from local file')
         filepath = args[2]
-        load_logs_from_local_file(filepath)
+        # load_logs_from_local_file(filepath)

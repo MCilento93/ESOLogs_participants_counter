@@ -17,6 +17,7 @@ entities
 .upm
 .local/share/virtualenv/py_info/1
 txt
+logs
 
 # all log files
 *.log
