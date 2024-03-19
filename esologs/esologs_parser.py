@@ -19,18 +19,45 @@
 
 
 ### IMPORTING
-import os, requests, json, datetime, configparser
+import os, requests, json, datetime, configparser, logging, sys
 from bs4 import BeautifulSoup
 
 
 ### GLOBALS
+# Directories
+MODULE_DIR = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+SW_DIR=os.path.dirname(MODULE_DIR)
+LOGS_DIR=os.path.join(SW_DIR,'logs')
+                              
+# Config file
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(os.path.join(SW_DIR,'config.ini'))
+
+# ESOlogs
 API_KEY = config['ESOLOGS']['API_KEY']
 VERBOSE = True
 INDENTATION = '  '
 
+# Logging
+logger = logging.getLogger(__name__)
+
+
 ### CLASSES
+class SpecialList:
+    def __init__(self,_list: list):
+        self.list = _list
+    
+    def __str__(self) -> str:
+        return ', '.join(self.list_of_str)
+    
+    @property
+    def str(self):
+        return str(self)
+
+    @property
+    def list_of_str(self):
+        return [str(a) for a in self.list]
+
 class Zone:
 
     @staticmethod
@@ -119,8 +146,11 @@ class Zone:
             self.is_valid = False
             self.name_short = None
             self.final_boss_id   = None
-            self.name = None
+            self.name = 'n/a'
 
+    def __str__(self) -> str:
+        return self.name
+    
     def check_if_final_boss(self,boss_id):
         if boss_id == self.final_boss_id:
             return True
@@ -141,7 +171,10 @@ class Fight:
             self.assign_difficulty()
         else:
             self.type = 'trash' # trash pull
-
+    
+    def __str__(self) -> str:
+        return self.name
+    
     @property   
     def is_final_boss(self):
         if self.type == 'boss':
@@ -177,14 +210,22 @@ class Fight:
             self.difficulty = 'Veteran+3'
             self.difficulty_prefix = 'v'
             self.difficulty_suffix = '+3'
-
-    @property
-    def summary(self):
-        return f"@{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix} - {self.boss_name} (kill = {str(self.kill)})"
+        else:
+            pass
 
     @property
     def name(self):
-        return f"{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix}"
+        if self.type == 'boss':
+            return f"{self.difficulty_prefix}{self.zone.name_short}{self.difficulty_suffix}"
+        else:
+            return 'trash-pull'
+        
+    @property
+    def summary(self):
+        if self.type == 'boss':
+            return self.name+f" - {self.boss_name} (kill = {str(self.kill)})"
+        else:
+            return 'trash-pull'
 
 class Friendly:
 
@@ -202,6 +243,12 @@ class Friendly:
         else:
             self.is_human = False
 
+    def __str__(self):
+        if self.is_human:
+            return self.username
+        else:
+            return 'not-human'
+    
     def get_fights_id(self):
         list_fights_id = []
         for fight in self.dict['fights']:
@@ -214,6 +261,31 @@ class Friendly:
         else:
             return False  
 
+class TrialClosed:
+
+    def __init__(self,fight:Fight,winners:SpecialList):
+        self.fight = fight
+        self.winners = winners
+
+    def __str__(self) -> str:
+        return self.name
+    
+    @property
+    def description(self):
+        return f"{self.fight.name} by {self.winners.str}"
+    
+    @property
+    def name(self):
+        return self.fight.name
+    
+    @property
+    def usernames_str(self):
+        return self.winners.str
+    
+    @property
+    def usernames_list_of_str(self):
+        return self.winners.list_of_str
+
 class Log:
     
     def __init__(self,url):
@@ -221,10 +293,12 @@ class Log:
         self.code = self.url.split('/')[-1] # code = final chunk of link
         self.request_url=f"https://www.esologs.com/v1/report/fights/{self.code}?api_key={API_KEY}"
         self.response = requests.get(self.request_url)
+        self.status = ''
         if self.response.status_code == 200:
             self.is_valid = True
             self.json = self.response.json()
         else:
+            logger.warning(f'{INDENTATION} Log not valid {self.url}')
             self.is_valid = False
             self.json = None
         self.owner = self.get_owner()
@@ -244,65 +318,117 @@ class Log:
     def get_owner(self):
         if self.is_valid:
             return self.json['owner']
-        
-    def get_last_pull_kills(self):
-        if not self.is_valid:
-            return []
-        fights = self.json['fights']
-        last_pull_kills = []
-        if VERBOSE:
-            print(f'\n{INDENTATION}Analyzing fights:')
-        for fight in fights:
-            fight_obj = Fight(fight)
-            if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
-                last_pull_kills.append(fight_obj)
-                if VERBOSE:
-                    print(f'{INDENTATION*2}Found successful last pull kill: {fight_obj.summary}')
-        if last_pull_kills == []:
-            print(f'{INDENTATION*2}No fights found. Log skipped.')
-        return last_pull_kills
-    
-    def get_human_friendlies(self):
+
+    def get_attendees(self):
         if not self.is_valid:
             return []
         friendlies = self.json['friendlies']
-        human_friendlies = []
-        if VERBOSE:
-            print(f'\n{INDENTATION}Analyzing friendlies:')
+        attendees = []
+        logger.info(f'{INDENTATION*2} Analyzing friendlies')
         for friend in friendlies:
             friend_obj = Friendly(friend)
             if friend_obj.is_human and not friend_obj.anonymous:
-                human_friendlies.append(friend_obj)
-                if VERBOSE:
-                    print(f'{INDENTATION*2}Found friend: {friend_obj.username}')
-        return human_friendlies
+                attendees.append(friend_obj)
+                logger.info(f'{INDENTATION*3}Found attendee (human-friend): {friend_obj.username}')
+        if attendees == []:
+            logger.warning(f'{INDENTATION*3}No attendees found.')
+        return SpecialList(attendees)
     
-    def calculate_list_winners(self):
-        print(f'\n\n\nCalculating winners (partecipants to a successful last pull kill) for the log {self.url} ({self.datetime_str}):')
-        self.last_pull_kills = self.get_last_pull_kills()
-        if self.last_pull_kills == []:
-            self.list_winners = []
-            return
-        self.human_friendlies = self.get_human_friendlies()
-        list_winners=[]
-        for fight in self.last_pull_kills:
-            _humans = []
-            for human in self.human_friendlies:
-                if human.partecipated_to(fight.id):
-                    _humans.append(human)
-            list_winners.append({'description':f"{fight.name} by {', '.join([a.username for a in _humans])}",
-                                 'fight':fight,
-                                 'participants':_humans,})
-            print(f"\n{INDENTATION}Summary for this log: {list_winners[-1]['description']}")
+    def calculate_trials_closed(self):
         
-        self.list_winners = list_winners
-        if self.list_winners == []:
-            print(f"{INDENTATION}No last pull kills found in this log")
+        # Check if valid first
+        if not self.is_valid:
+            return []
+        
+        # Get attendees
+        self.attendees = self.get_attendees()
+
+        # Get fights
+        _fights = self.json['fights']
+        fights = [Fight(fight) for fight in _fights]
+
+        # Cross the data
+        trials_closed = []
+        logger.info(f'{INDENTATION*2}Analyzing fights:')
+        for fight in fights:
+            winners = []
+            if fight.is_final_boss and fight.kill: # compare boss id and if last pull
+                for attendee in self.attendees.list:
+                    if attendee.partecipated_to(fight.id):
+                        winners.append(attendee)
+                trial_closed = TrialClosed(fight,SpecialList(winners))
+                trials_closed.append(trial_closed)
+                logger.info(f'{INDENTATION*3}Found last pull kill: {trial_closed.description}')
+        self.trials_closed = SpecialList(trials_closed)
+
+        # Evaluate status
+        if self.trials_closed.list:
+            self.status = f'{len(self.trials_closed.list)} tc'
+        else:
+            logger.warning(f'{INDENTATION*3}No fights found.')
+            self.status = 'No trials'
+
+
+    # def get_trials_closed(self):
+    #     if not self.is_valid:
+    #         return []
+    #     fights = self.json['fights']
+    #     last_pull_kills = []
+    #     logger.info(f'{INDENTATION*2}Analyzing fights:')
+    #     for fight in fights:
+    #         fight_obj = Fight(fight)
+    #         if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
+    #             last_pull_kills.append(fight_obj)
+    #             logger.info(f'{INDENTATION*3}Found last pull kill: {fight_obj.summary}')
+    #     if last_pull_kills == []:
+    #         logger.warning(f'{INDENTATION*3}No fights found.')
+    #     return SpecialList(last_pull_kills)
+    
+    # def calculate_list_winners(self):
+        
+    #     logger.info(f'{INDENTATION}Calculating winners (attendees to a successful last pull kill) for the log {self.url} ({self.datetime_str})')
+        
+    #     # Get attendees
+    #     self.attendees = self.get_attendees()
+
+    #     # Get Last Pull Kills
+    #     self.trials_closed = self.get_trials_closed()
+        
+    #     # Calculate winners (participants that closed a trial)
+    #     list_winners=[]
+    #     for fight in self.trials_closed.list:
+    #         _humans = []
+    #         for human in self.attendees.list:
+    #             if human.partecipated_to(fight.id):
+    #                 _humans.append(human)
+    #         winners = SpecialList(_humans)
+    #         list_winners.append({'description':f"{fight.name} by {winners.str}",
+    #                              'trial_closed':fight,
+    #                              'trial_closed_name':fight.name,
+    #                              'winners':winners,
+    #                              'usernames_str':winners.str,
+    #                              'usernames_list_of_str':winners.list_of_str})
+    #         logger.info(f"{INDENTATION*2}Trial closed found: {list_winners[-1]['description']}")
+    #     self.list_winners = list_winners
+
+    #     # Evaluate status
+    #     if self.list_winners:
+    #         self.status = f'{len(self.trials_closed.list)} tc'
+    #     else:
+    #         self.status = 'No trials'
 
 
 ### MAIN           
 if __name__ == '__main__':
-    
+
+    # Setting up logging for test phase
+    logpath=os.path.join(LOGS_DIR,'logfile_esolgos.log')
+    logging.basicConfig(filename=logpath, 
+                    level=logging.INFO,
+                    format='%(asctime)s %(levelname)s @%(name)s: %(message)s',
+                    datefmt='%Y/%m/%d %H:%M')
+    logger.info('*** Run script esologs_parser.py')
+
     # TEST 1: Get information on final trial bosses
     print('Comparing zones information:')
     zones_json = Zone.scrape_zone_json() # current values from ESOlogs
@@ -320,13 +446,16 @@ if __name__ == '__main__':
     # no. 0 pull MOL    https://www.esologs.com/reports/2zt4PWF89A6qxcXn
             
     log01 = Log('https://www.esologs.com/reports/1BNtTCKAa9HQhGyq')
-    log01.calculate_list_winners()
+    logger.info(f'Analyzing log "{log01.title}"')
+    # log01.calculate_list_winners()
+    log01.calculate_trials_closed()
 
     log02 = Log('https://www.esologs.com/reports/dZp6g1RhL3KTmJDt')
-    log02.calculate_list_winners()
+    logger.info(f'Analyzing log "{log02.title}"')
+    # log02.calculate_list_winners()
+    log02.calculate_trials_closed()
 
     log03 = Log('https://www.esologs.com/reports/2zt4PWF89A6qxcXn')
-    log03.calculate_list_winners()
-
-    log04 = Log('https://www.esologs.com/reports/gVXtLRBqGQ12a8vP')
-    log04.calculate_list_winners()
+    logger.info(f'Analyzing log "{log03.title}"')
+    # log03.calculate_list_winners()
+    log03.calculate_trials_closed()

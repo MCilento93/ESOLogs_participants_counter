@@ -9,6 +9,7 @@ database/ewallet.pem
 database/tnsnames.ora
 database/Wallet_CrownStoreDealsBotDB.zip
 database/esologs-counter-39fdce6048e3.json
+esologs.code-workspace
 
 # folders
 __pycache__
