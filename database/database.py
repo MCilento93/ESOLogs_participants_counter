@@ -21,7 +21,6 @@ config.read(os.path.join(SW_DIR,'config.ini'))
 # Backoff algorithm
 GOOGLE_API_REFRESH_TIME = 60                    # s
 MAX_BACKOFF_TIME = GOOGLE_API_REFRESH_TIME+1    # s - with margins
-INDENTATION = '  '
 
 # Google sheet
 SPREADSHEET_NAME = 'esologs-counter-R01'
@@ -78,12 +77,12 @@ def get_in_batch(ws):
     try:
         return ws.get_all_records() # va in errore se trova un alcune colonne di header vuote
     except gspread.exceptions.GSpreadException:
-        logger.error(f'{INDENTATION}Header in "{ws.title}" worksheet has some holes or there are duplicate trial names. Check the header.')
+        logger.error(f'Header in "{ws.title}" worksheet has some holes or there are duplicate trial names. Check the header.')
 
 @backoff.on_exception(backoff.expo,gspread.exceptions.APIError,max_time=MAX_BACKOFF_TIME,logger=logger)
 def set_in_batch(ws,cells:list):
     ws.update_cells(cells)
-    logger.info(f'{INDENTATION}"{ws.title}" worksheet updated on {len(cells)} cells')
+    logger.info(f'  "{ws.title}" worksheet updated on {len(cells)} cells')
 
 
 ### CLASSES
@@ -119,7 +118,7 @@ class RankDataBase:
 
     def start_up_procedure(self):
         set_value(self.ws,2,1,value="This row has been intentionally left empty")
-        logger.warning('Dumb value added as username to sustain update procedure')
+        logger.warning('  Dumb value added in *rank* db as username to sustain update procedure')
 
     def slow_update(self,usernames:list,trial_name,time_str):
         logger.warning(f'Slow update procedure started ({trial_name} of {time_str})')
@@ -132,7 +131,7 @@ class RankDataBase:
             logger.info(f'+1 @{trial_name} for {username}')
 
     def update(self,usernames:list,trial_name,time_str):
-        logger.info(f'Update procedure started ({trial_name} of {time_str})')
+        logger.info(f'*rank* db - update procedure started ({trial_name} of {time_str})')
         cells = [] # to update
         values = get_in_batch(self.ws)
 
@@ -178,10 +177,11 @@ class RankDataBase:
         # Update worksheet
         set_in_batch(self.ws,cells)
         if flag_add_trial:
-            logger.info(f'{INDENTATION*3}Added new trial {trial_name}')
-        logger.info(f'{INDENTATION*2}Update procedure succesfully completed')
-        
+            logger.info(f'  New column with trial {trial_name} added')
+        logger.info(f"{trial_name} succesfully added to the *rank* database")
+
     def update_attendees(self,usernames_list_of_str):
+
         # To be executed after the .update method so that users are already known
         cells = [] # to update
         values = get_in_batch(self.ws)
@@ -204,8 +204,7 @@ class RankDataBase:
 
         # Update worksheet
         set_in_batch(self.ws,cells)
-        
-
+        logger.info(f'  Attendances number updated in *rank* db')
 
 class LogDataBase:
 
@@ -213,26 +212,26 @@ class LogDataBase:
         self.gc = gspread.service_account(filename=GOOGLE_KEY_DIR)
         self.sh = self.gc.open(SPREADSHEET_NAME) # spreadsheet
         self.ws = self.sh.worksheet('logs') # worksheet
-
+   
     @backoff.on_exception(backoff.expo,gspread.exceptions.APIError,max_time=MAX_BACKOFF_TIME,logger=logger)
-    def append_log(self,log):
-        row = find_row_by_val(self.ws,log.code,in_column=4) # in case of duplicate, skip
+    def append_log(self, strftime, title, owner, code, url, attendees_str):
+        row = find_row_by_val(self.ws,url,in_column=5) # in case of duplicate, skip
         if row == None:
-            attendees = log.get_attendees()
-            body=[  log.datetime_str,   # A - timestamp
-                    log.title,          # B - title
-                    log.owner,          # C - owner
-                    log.code,           # D - code
-                    log.url,            # E - url
-                    'N',                # F - processed
-                    '',                 # G - status
-                    '',                 # H - trials closed
-                    attendees.str]      # I - attendees
+            body=[  strftime,       # A - timestamp
+                    title,          # B - title
+                    owner,          # C - owner
+                    code,           # D - code
+                    url,            # E - url
+                    'N',            # F - processed
+                    '',             # G - status
+                    '',             # H - trials closed
+                    attendees_str]  # I - attendees
             self.ws.append_row(body, table_range="A1:I1")
-    
+            logger.info(f'  {title} of {strftime} correctly loaded in *logs* worksheet ({url})')
+
     def start_up_procedure(self):
         set_value(self.ws,2,1,value="This row has been intentionally left empty")
-        logger.warning('Dumb value added as log to sustain update procedure')
+        logger.warning('Dumb value added to *log* database for startup procedure')
 
     def get_unprocessed_logs(self):
         values = get_in_batch(self.ws)
@@ -242,11 +241,12 @@ class LogDataBase:
         df = pd.DataFrame.from_dict(values)
         return df['url'].where(df['processed'] == 'N').dropna().to_list()
     
-    def mark_processed_log(self,code,status,trials_closed_str):
-        row = find_row_by_val(self.ws,code,in_column=4)
-        set_value(self.ws,row,col=6,value='Y')                      # set processed
+    def mark_processed_log(self,url,status,trials_closed_str):
+        row = find_row_by_val(self.ws,url,in_column=5)
+        set_value(self.ws,row,col=6,value='Y')                  # set processed
         set_value(self.ws,row,col=7,value=status)               # set status
-        set_value(self.ws,row,col=8,value=trials_closed_str)    # update number of trial closed
+        set_value(self.ws,row,col=8,value=trials_closed_str)    # update name of trial closed
+        logger.info(f'Processed and status of the log updated for {trials_closed_str}')
 
     
 ### TESTs
@@ -260,7 +260,7 @@ def test1__slow_update():
     for trial in trial_list:
         r.slow_update(username_list,trial,'1-1-1070')
     end = time.time()
-    logger.info(f'{INDENTATION}Test 1 completed in {end-start}s')
+    logger.info(f'Test 1 completed in {end-start}s')
 
 def test2__update():
     logger.info(' * Test 2 started')
@@ -272,7 +272,7 @@ def test2__update():
     for trial in trial_list:
         r.update(username_list,trial,'1-1-1070')
     end = time.time()
-    logger.info(f'{INDENTATION}Test 2 completed in {end-start}s')
+    logger.info(f'Test 2 completed in {end-start}s')
 
 def test3__log_update():
     pass

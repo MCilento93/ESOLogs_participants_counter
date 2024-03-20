@@ -10,19 +10,26 @@ Its raw architecture is herebelow sketched:
 
 ### Vocabulary
 With reference to the game:
-* Zone      : trial zone as reported on the game map
-* Fight     : every pull classified according to esologs.com. Type 'trash' is neglected, type 'boss' is taken for further analysis
-* Trial closed: a Fight with `last_pull_kill=True` (final boss defeated)
+| <!-- -->     	| <!-- -->                                                                                                             	|
+|--------------	|----------------------------------------------------------------------------------------------------------------------	|
+| Zone         	| trial zone as reported on the game map                                                                               	|
+| Fight        	| every pull classified according to esologs.com. Type 'trash' is neglected, type 'boss' is taken for further analysis 	|
+| Trial closed 	| a Fight with `last_pull_kill=True` (final boss defeated)                                                             	|
 
 With reference to esologs.com:
-* Friendly  : either human or not human appearing in the log. Anonimous Friendly are neglected for further processes
-* Owner     : the account name of the one that loaded the log on esologs.com
-* code    : the alphanumerical end section of the esolog url and unique identifier
+| <!-- --> 	| <!-- -->                                                                                               	|
+|----------	|--------------------------------------------------------------------------------------------------------	|
+| Friendly 	| either human or not human appearing in the log. Anonimous Friendly are neglected for further processes 	|
+| Owner    	| the account name of the one that loaded the log on esologs.com                                         	|
+| code     	| the alphanumerical end section of the esolog url and unique identifier                                 	|
 
 With reference to this project:
-* Attendee  : each human friendly appearing in the log. For being considered attendee, the trial has not to be necessarly closed.
-* Rank      : a big table of the database containing the number of attendances for every trial analyzed in the processed logs
-
+| <!-- -->      	| <!-- -->                                                                                                            	|
+|---------------	|---------------------------------------------------------------------------------------------------------------------	|
+| Attendee      	| each human friendly appearing in the log. For being considered attendee, the trial has not to be necessarly closed. 	|
+| Winner        	| An attendee that closed a trial                                                                                     	|
+| Rank database 	| a big table of the database containing the number of attendances for every trial analyzed in the processed logs     	|
+| Log database  	| a big table containing innformation on all logs analyzed or not yet                                                 	|
 ### Commands
 
 

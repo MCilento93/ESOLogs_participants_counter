@@ -36,7 +36,6 @@ config.read(os.path.join(SW_DIR,'config.ini'))
 # ESOlogs
 API_KEY = config['ESOLOGS']['API_KEY']
 VERBOSE = True
-INDENTATION = '  '
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -286,25 +285,56 @@ class TrialClosed:
     def usernames_list_of_str(self):
         return self.winners.list_of_str
 
+class APIError(Exception):
+    # Esologs API error, or too many requests (3600/h allowed)
+    pass
+
 class Log:
     
     def __init__(self,url):
+        """
+        Log Status (visible from logs db):
+           - NOT ASSIGNET YET    : when created, not visible outside the class herebelow
+           - VALID LOG           : log with valid information
+           - API ERROR           : error with esologs api call, retry
+           - CONNECTION ERORR    : in case of connection lost during the api-call
+           - X TC                : indicating the number of trial closed
+           - NO TC               : no trial closed in the log
+        """
         self.url = url    # complete url of the log 
         self.code = self.url.split('/')[-1] # code = final chunk of link
         self.request_url=f"https://www.esologs.com/v1/report/fights/{self.code}?api_key={API_KEY}"
-        self.response = requests.get(self.request_url)
-        self.status = ''
-        if self.response.status_code == 200:
-            self.is_valid = True
-            self.json = self.response.json()
-        else:
-            logger.warning(f'{INDENTATION} Log not valid {self.url}')
-            self.is_valid = False
-            self.json = None
+        self.status = 'NOT ASSIGNET YET'
+        logger.info(f'Analyzing url {self.url}') 
+        try:
+            self.response = requests.get(self.request_url)
+            if self.response.status_code == 200:
+                self.is_valid = True
+                self.status = 'VALID LOG'
+                self.json = self.response.json()
+                logger.debug('  Request done with success')
+            else:
+                raise APIError('Request done, but the log is not valid')
+        except APIError:
+            logger.critical('  Request done, but the log is not valid (API erorr, status code != 200)')
+            self.set_invalid_prop()
+            self.status = 'API ERROR'
+            return
+        except requests.exceptions.ConnectionError:
+            logger.critical('  Connection erorr, please retry')
+            self.set_invalid_prop()
+            self.status = 'CONNECTION ERORR'
+            return
         self.owner = self.get_owner()
         self.datetime = self.get_datetime()
         self.datetime_str = self.datetime.strftime('%Y/%m/%d')
         self.title = self.get_title()
+        logger.info(f'  Valid log enterd: {self.title} ({self.datetime_str})')
+    
+    def set_invalid_prop(self):
+        self.is_valid = False
+        self.json = None
+        self.datetime_str = 'n/a'
 
     def get_datetime(self):
         if self.is_valid:
@@ -324,21 +354,25 @@ class Log:
             return []
         friendlies = self.json['friendlies']
         attendees = []
-        logger.info(f'{INDENTATION*2} Analyzing friendlies')
+        logger.info(f'- Analyzing friendlies')
         for friend in friendlies:
             friend_obj = Friendly(friend)
             if friend_obj.is_human and not friend_obj.anonymous:
                 attendees.append(friend_obj)
-                logger.info(f'{INDENTATION*3}Found attendee (human-friend): {friend_obj.username}')
+                logger.info(f'  Found attendee (human-friend): {friend_obj.username}')
         if attendees == []:
-            logger.warning(f'{INDENTATION*3}No attendees found.')
+            logger.warning(f'  No attendees found.')
         return SpecialList(attendees)
     
     def calculate_trials_closed(self):
         
-        # Check if valid first
+        # Inizialization
+        logger.info(f'Analyzing trials closed')
         if not self.is_valid:
-            return []
+            self.attendees = []
+            self.trials_closed = []
+            logger.warning(f'  Log not valid, no fights found.')
+            return
         
         # Get attendees
         self.attendees = self.get_attendees()
@@ -349,7 +383,7 @@ class Log:
 
         # Cross the data
         trials_closed = []
-        logger.info(f'{INDENTATION*2}Analyzing fights:')
+        logger.info(f'- Analyzing fights:')
         for fight in fights:
             winners = []
             if fight.is_final_boss and fight.kill: # compare boss id and if last pull
@@ -358,64 +392,15 @@ class Log:
                         winners.append(attendee)
                 trial_closed = TrialClosed(fight,SpecialList(winners))
                 trials_closed.append(trial_closed)
-                logger.info(f'{INDENTATION*3}Found last pull kill: {trial_closed.description}')
+                logger.info(f'  Found last pull kill: {trial_closed.description}')
         self.trials_closed = SpecialList(trials_closed)
 
-        # Evaluate status
+        # Update status
         if self.trials_closed.list:
-            self.status = f'{len(self.trials_closed.list)} tc'
+            self.status = f'{len(self.trials_closed.list)} TC'
         else:
-            logger.warning(f'{INDENTATION*3}No fights found.')
-            self.status = 'No trials'
-
-
-    # def get_trials_closed(self):
-    #     if not self.is_valid:
-    #         return []
-    #     fights = self.json['fights']
-    #     last_pull_kills = []
-    #     logger.info(f'{INDENTATION*2}Analyzing fights:')
-    #     for fight in fights:
-    #         fight_obj = Fight(fight)
-    #         if fight_obj.is_final_boss and fight_obj.kill: # compare boss id and if last pull
-    #             last_pull_kills.append(fight_obj)
-    #             logger.info(f'{INDENTATION*3}Found last pull kill: {fight_obj.summary}')
-    #     if last_pull_kills == []:
-    #         logger.warning(f'{INDENTATION*3}No fights found.')
-    #     return SpecialList(last_pull_kills)
-    
-    # def calculate_list_winners(self):
-        
-    #     logger.info(f'{INDENTATION}Calculating winners (attendees to a successful last pull kill) for the log {self.url} ({self.datetime_str})')
-        
-    #     # Get attendees
-    #     self.attendees = self.get_attendees()
-
-    #     # Get Last Pull Kills
-    #     self.trials_closed = self.get_trials_closed()
-        
-    #     # Calculate winners (participants that closed a trial)
-    #     list_winners=[]
-    #     for fight in self.trials_closed.list:
-    #         _humans = []
-    #         for human in self.attendees.list:
-    #             if human.partecipated_to(fight.id):
-    #                 _humans.append(human)
-    #         winners = SpecialList(_humans)
-    #         list_winners.append({'description':f"{fight.name} by {winners.str}",
-    #                              'trial_closed':fight,
-    #                              'trial_closed_name':fight.name,
-    #                              'winners':winners,
-    #                              'usernames_str':winners.str,
-    #                              'usernames_list_of_str':winners.list_of_str})
-    #         logger.info(f"{INDENTATION*2}Trial closed found: {list_winners[-1]['description']}")
-    #     self.list_winners = list_winners
-
-    #     # Evaluate status
-    #     if self.list_winners:
-    #         self.status = f'{len(self.trials_closed.list)} tc'
-    #     else:
-    #         self.status = 'No trials'
+            logger.warning(f'  No fights found.')
+            self.status = 'NO TC'
 
 
 ### MAIN           
@@ -425,8 +410,9 @@ if __name__ == '__main__':
     logpath=os.path.join(LOGS_DIR,'logfile_esolgos.log')
     logging.basicConfig(filename=logpath, 
                     level=logging.INFO,
-                    format='%(asctime)s %(levelname)s @%(name)s: %(message)s',
+                    format='%(asctime)s %(levelname)-8s @%(name)-8s: %(message)s',
                     datefmt='%Y/%m/%d %H:%M')
+    logger.info('')
     logger.info('*** Run script esologs_parser.py')
 
     # TEST 1: Get information on final trial bosses
@@ -444,18 +430,19 @@ if __name__ == '__main__':
     # no. 2 pull CR     https://www.esologs.com/reports/1BNtTCKAa9HQhGyq
     # no. 1 pull SS     https://www.esologs.com/reports/dZp6g1RhL3KTmJDt
     # no. 0 pull MOL    https://www.esologs.com/reports/2zt4PWF89A6qxcXn
-            
-    log01 = Log('https://www.esologs.com/reports/1BNtTCKAa9HQhGyq')
-    logger.info(f'Analyzing log "{log01.title}"')
-    # log01.calculate_list_winners()
+
+    url01 = 'https://www.esologs.com/reports/1BNtTCKAa9HQhGyq'
+    log01 = Log(url01)
     log01.calculate_trials_closed()
 
-    log02 = Log('https://www.esologs.com/reports/dZp6g1RhL3KTmJDt')
-    logger.info(f'Analyzing log "{log02.title}"')
-    # log02.calculate_list_winners()
+    url02 = 'https://www.esologs.com/reports/dZp6g1RhL3KTmJDt'
+    log02 = Log(url02)
     log02.calculate_trials_closed()
 
-    log03 = Log('https://www.esologs.com/reports/2zt4PWF89A6qxcXn')
-    logger.info(f'Analyzing log "{log03.title}"')
-    # log03.calculate_list_winners()
+    url03 = 'https://www.esologs.com/reports/2zt4PWF89A6qxcXn' 
+    log03 = Log(url03)
     log03.calculate_trials_closed()
+
+    url04 = 'not_a_valid_url' 
+    log04 = Log(url04)
+    log04.calculate_trials_closed()
