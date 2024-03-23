@@ -213,7 +213,7 @@ if __name__ == '__main__':
         logger.info('')
         logger.info('*** RUN PROCEDURE: Discord bot')
         logger_discord = logging.getLogger('nextcord') # setup parallel log for nextcord
-        logger_discord.setLevel(logging.INFO)
+        logger_discord.setLevel(logging.CRITICAL)
         handler = logging.FileHandler(filename='logs/discord.log', encoding='utf-8', mode='w')
         handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s @%(name)-23s: %(message)s',
                                                '%Y/%m/%d %H:%M'))
