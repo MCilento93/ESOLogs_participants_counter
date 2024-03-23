@@ -141,7 +141,7 @@ I will keep track of all trials in the chat {LINK_TO_CHANNEL}.
 Stay ahead with the rank. Happy gaming! ⚔️👑🏹
 """,suppress_embeds=True)
 
-@bot.slash_command(name='show_rank',description='Getting the updated rank of the guild')
+@bot.slash_command(name='show_rank',description='Print updated rank of the guild')
 async def show_rank(interaction: nextcord.Interaction):
     await interaction.response.defer()
 
@@ -161,7 +161,7 @@ async def show_rank(interaction: nextcord.Interaction):
         logger.error('Empty *rank* db ... null data fetched in show_rank() method')
         await interaction.followup.send(f"🙇‍♀️ Rank is empty, check [database]({rank_worksheet_url}) and inform admins")
 
-@bot.slash_command(name='process_logs',description='Getting the updated rank of the guild')
+@bot.slash_command(name='process_logs',description='Calculate unprocessed logs from database')
 async def process_logs(interaction: nextcord.Interaction):
     await interaction.response.defer()
 
