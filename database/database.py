@@ -4,6 +4,7 @@ import os, configparser, logging
 import gspread, backoff
 import pandas as pd
 from gspread import Cell
+from table2ascii import table2ascii as t2a, PresetStyle
 logger = logging.getLogger(__name__)
 
 
@@ -100,6 +101,10 @@ class RankDataBase:
         self.sh = self.gc.open(SPREADSHEET_NAME) # spreadsheet
         self.ws = self.sh.worksheet('rank') # worksheet
 
+    @property
+    def url_to_worksheet(self):
+        return self.ws.url
+    
     def find_username_row(self,username,or_insert=False):
         row = find_row_by_val(self.ws,username)
         if row==None and or_insert:
@@ -129,6 +134,30 @@ class RankDataBase:
             set_value(self.ws,row,col,current_counter+1)
             set_value(self.ws,row,2,time_str)
             logger.info(f'+1 @{trial_name} for {username}')
+
+    def get_ascii_table(self):
+        values = get_in_batch(self.ws)
+        # Startup for an empty worksheet
+        if values == []:
+            return None
+
+        # Open pandas dataframe to locate elements
+        df = pd.DataFrame.from_dict(values)
+        df = df[df['attendances']!='']                                              # remove blank row
+        df.sort_values(by=['attendances'],ascending=False, inplace=True)            # sort by attendances
+        df_subset = df[['username','attendances','n','v','v HM+1+2+3']][0:10]       # up to 10th on the leaderboard
+        df_subset['Pos.'] = df_subset.reset_index().index + 1                       # Add rank position
+        df_subset = df_subset[['Pos.','username','attendances','n','v','v HM+1+2+3']]# Change column order
+        # df_subset.set_index('Pos.',inplace=True)
+        # df_subset.to_markdown(tablefmt="grid")                                    # intresting alternative with the module 'tabulate'
+        header = df_subset.columns.tolist()
+        body = df_subset.values.tolist()
+        output = t2a(
+            header=header,
+            body=body,
+            style=PresetStyle.thin_compact
+        )
+        return output
 
     def update(self,usernames:list,trial_name,time_str):
         logger.info(f'*rank* db - update procedure started ({trial_name} of {time_str})')
@@ -182,7 +211,7 @@ class RankDataBase:
 
     def update_attendees(self,usernames_list_of_str):
 
-        # To be executed after the .update method so that users are already known
+        # To be executed after the .update method so that users are already defined
         cells = [] # to update
         values = get_in_batch(self.ws)
 
@@ -212,7 +241,11 @@ class LogDataBase:
         self.gc = gspread.service_account(filename=GOOGLE_KEY_DIR)
         self.sh = self.gc.open(SPREADSHEET_NAME) # spreadsheet
         self.ws = self.sh.worksheet('logs') # worksheet
-   
+    
+    @property
+    def url_to_worksheet(self):
+        return self.ws.url
+    
     @backoff.on_exception(backoff.expo,gspread.exceptions.APIError,max_time=MAX_BACKOFF_TIME,logger=logger)
     def append_log(self, strftime, title, owner, code, url, attendees_str):
         row = find_row_by_val(self.ws,url,in_column=5) # in case of duplicate, skip
@@ -289,4 +322,4 @@ if __name__ == '__main__':
     logger.info('*** Run script database.py')
     # test2__update()
     # test1__slow_update()
-    ws = LogDataBase().ws
+    ws = RankDataBase().ws

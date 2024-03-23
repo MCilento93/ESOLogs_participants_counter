@@ -19,6 +19,7 @@ entities
 .local/share/virtualenv/py_info/1
 txt
 logs
+icon
 
 # all log files
 *.log

@@ -48,6 +48,11 @@ python main.py load_logs_from_file txt/local.txt
 :: Run in the project folder
 python main.py process_logs
 ```
+* To **run discord bot** whose task is to listen in a given chat:
+```
+:: Run in the project folder
+python main.py discord
+```
 
 ### Tips
 It is highly recommended to store the console output when dealing with many historical logs. Check the log files as well.
