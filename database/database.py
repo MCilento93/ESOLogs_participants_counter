@@ -145,7 +145,7 @@ class RankDataBase:
         df = pd.DataFrame.from_dict(values)
         df = df[df['attendances']!='']                                              # remove blank row
         df.sort_values(by=['attendances'],ascending=False, inplace=True)            # sort by attendances
-        df_subset = df[['username','attendances','n','v','v HM+1+2+3']][0:10]       # up to 10th on the leaderboard
+        df_subset = df[['username','attendances','n','v','v HM+1+2+3']][0:10]       # up to 10th on the ranking
         df_subset['Pos.'] = df_subset.reset_index().index + 1                       # Add rank position
         df_subset = df_subset[['Pos.','username','attendances','n','v','v HM+1+2+3']]# Change column order
         # df_subset.set_index('Pos.',inplace=True)
@@ -246,6 +246,14 @@ class LogDataBase:
     def url_to_worksheet(self):
         return self.ws.url
     
+    @property
+    def num_logs(self):
+        values = get_in_batch(self.ws)
+        if values:
+            return len(values) # check with/without blank line
+        else:
+            return 0
+        
     @backoff.on_exception(backoff.expo,gspread.exceptions.APIError,max_time=MAX_BACKOFF_TIME,logger=logger)
     def append_log(self, strftime, title, owner, code, url, attendees_str):
         row = find_row_by_val(self.ws,url,in_column=5) # in case of duplicate, skip

@@ -29,7 +29,7 @@ With reference to this project:
 | Attendee      	| each human friendly appearing in the log. For being considered attendee, the trial has not to be necessarly closed. 	|
 | Winner        	| An attendee that closed a trial                                                                                     	|
 | Rank database 	| a big table of the database containing the number of attendances for every trial analyzed in the processed logs     	|
-| Log database  	| a big table containing innformation on all logs analyzed or not yet                                                 	|
+| Log database  	| a big table containing information on all logs analyzed or not yet                                                 	|
 ### Commands
 
 
@@ -57,10 +57,10 @@ python main.py discord
 ### Tips
 It is highly recommended to store the console output when dealing with many historical logs. Check the log files as well.
 ```
-:: To write on a file the console output, run
-python main.py > output.txt
-:: or even
-python main.py load_logs_from_file txt/local.txt > output.txt
+python main.py analyze_logs_from_file txt/local.txt > txt/output.txt
+python main.py load_logs_from_file txt/local.txt > txt/output.txt
+python main.py process_logs > txt/output.txt
+python main.py discord > txt/output.txt
 ```
 Console output can be really helpful when dealing with high number of logs, since google API has limited number of requests (60 requests/min) and the process may take a while.
 

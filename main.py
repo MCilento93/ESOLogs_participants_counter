@@ -13,6 +13,8 @@
 ### IMPORTING
 # Standard library imports
 import sys, logging, configparser
+from datetime import datetime
+from pytz import timezone
 
 # Project library imports
 from esologs.esologs_parser import *
@@ -37,9 +39,15 @@ SERVER_ID = config['GUILD']['SERVER_ID']
 CHANNEL_ID = config['GUILD']['CHANNEL_ID']
 LINK_TO_CHANNEL = f"https://discord.com/channels/{SERVER_ID}/{CHANNEL_ID}"
 
+# Timezone
+TIMEZONE = timezone('Europe/Rome') # Set for logging
+LOCAL_TIME_NOW = datetime.datetime.now(TIMEZONE).astimezone() # Get tz info for nextcord
+TASK_LOOP_TIME = datetime.time(hour=5, minute=0, tzinfo=LOCAL_TIME_NOW.tzinfo)
+
 
 ### LOGGER
 logger = logging.getLogger(__name__)
+logging.Formatter.converter = lambda *args: datetime.datetime.now(tz=TIMEZONE).timetuple()
 logging.basicConfig(filename='logs/logfile.log', 
                     level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s @%(name)-22s: %(message)s',
@@ -104,13 +112,16 @@ async def has_permissions(interaction):
     
 @bot.event
 async def on_ready():
-    print(f"{bot.user} bot is working for Assassin's Soul")
-    print('-------------------------------------------------------')
+    num_logs = LogDataBase().num_logs
+    print(f"{bot.user} bot is handling {num_logs} logs for Assassin's Souls")
+    print('------------------------------------------------------------------')
+    scheduled_message_routine.start()
+    await bot.change_presence(activity=nextcord.CustomActivity(name=f"""Handling {num_logs} logs for the Assassin's Souls"""))
 
 @bot.event
 async def on_message(message):
     if message.guild.id == int(SERVER_ID) and message.channel.id == int(CHANNEL_ID) and message.author != bot.user:
-        logger.info(f"{message.author} typed {message.content} in the esologs chat ({LINK_TO_CHANNEL})")
+        logger.info(f"{message.author} typed: {message.content}")
         urls = extract_esologs_urls_from_str(message.content)
         if urls:
             num_urls = len(urls)
@@ -124,16 +135,20 @@ async def on_message(message):
                                             log.url,                # E - url
                                             log.get_attendees().str)# I - attendees
             logs_worksheet_url = LogDataBase().url_to_worksheet
-            await message.reply(f'{num_urls} valid log(s) found! Thank you {message.author} 🙏🏻, I have updated the [logs-database]({logs_worksheet_url}) 💾',suppress_embeds=True)
+            await message.reply(f"""
+Valid log(s) found! Thank you {message.author} 🙏🏻
+I have updated the [logs-database]({logs_worksheet_url}) 💾
+""",suppress_embeds=True)
 
 @bot.slash_command(name='help', description="Get help on how I may help you")
 async def help(interaction: nextcord.Interaction):
     await interaction.response.defer()
+    logger.info(f'{interaction.user.name} invoked /help')
     await interaction.followup.send(f"""
 👋 Greetings! I'm *{bot.user}* bot, here to account trials attendances in the guild analyzing [esologs.com](https://www.esologs.com/) urls!
+Click [here](https://github.com/MCilento93/esologs-counter/blob/main/README.md) for my README 📜
 
 **How I Help:**
-I will keep track of all trials in the chat </esologs:{int(CHANNEL_ID)}>.
 I will keep track of all trials in the chat {LINK_TO_CHANNEL}.
 **</show_rank:1221026522983436301>:** Use me to get the update rank of the community
 **</process_logs:1221026519745429585>:** With this function I will calculate unprocessed logs (if any)
@@ -144,6 +159,7 @@ Stay ahead with the rank. Happy gaming! ⚔️👑🏹
 @bot.slash_command(name='show_rank',description='Print updated rank of the guild')
 async def show_rank(interaction: nextcord.Interaction):
     await interaction.response.defer()
+    logger.info(f'{interaction.user.name} invoked /show_rank')
 
     # Check Permissions
     permission_bool = await has_permissions(interaction)
@@ -156,14 +172,15 @@ async def show_rank(interaction: nextcord.Interaction):
 
     # Send reply
     if table_ascii:
-        await interaction.followup.send(f"**Updated leaderboard**```\n{table_ascii}\n```\n🧮 Click [here]({rank_worksheet_url}) for full leaderboard.",suppress_embeds=True)
+        await interaction.followup.send(f"**Updated rank of the trials 🏆**```\n{table_ascii}\n```\n🧮 Click [here]({rank_worksheet_url}) for full table",suppress_embeds=True)
     else:
-        logger.error('Empty *rank* db ... null data fetched in show_rank() method')
+        logger.error('Empty *rank* database ... null data fetched in /show_rank slash command')
         await interaction.followup.send(f"🙇‍♀️ Rank is empty, check [database]({rank_worksheet_url}) and inform admins")
 
 @bot.slash_command(name='process_logs',description='Calculate unprocessed logs from database')
 async def process_logs(interaction: nextcord.Interaction):
     await interaction.response.defer()
+    logger.info(f'{interaction.user.name} invoked /process_logs')
 
     # Check Permissions
     permission_bool = await has_permissions(interaction)
@@ -172,14 +189,23 @@ async def process_logs(interaction: nextcord.Interaction):
 
     # Update rank database
     if interaction.user.id in LIST_OF_ADMINS+[interaction.guild.owner_id]:
-        message = f'{interaction.user.name} requested process_logs() procedure. Starting ...'
+        message = f'  process_logs_in_db() starting ...'
         print(message)
         logger.info(message)
         process_logs_in_db()
         await interaction.followup.send(f"✅ Rank updated")
     else:
         await interaction.followup.send(f"🚫 You don't have permissions for update the rank")
+        logger.error('  Something went wrong. Check logs')
     return
+
+@tasks.loop(time=TASK_LOOP_TIME)
+async def scheduled_message_routine():
+    print('\nDaily routine for esologs-counter bot...')
+
+    # Update presence
+    num_logs = LogDataBase().num_logs
+    await bot.change_presence(activity=nextcord.CustomActivity(name=f"""Handling {num_logs} logs for the Assassin's Souls"""))
 
 
 ### MAIN 
