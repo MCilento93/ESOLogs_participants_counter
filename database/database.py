@@ -87,13 +87,6 @@ def set_in_batch(ws,cells:list):
 
 
 ### CLASSES
-    
-class UserInfo:
-    def __init__(self,row,col,value) -> None:
-        self.row = row
-        self.col = col
-        self.value = value
-
 class RankDataBase:
 
     def __init__(self):
@@ -209,7 +202,9 @@ class RankDataBase:
             logger.info(f'  New column with trial {trial_name} added')
         logger.info(f"{trial_name} succesfully added to the *rank* database")
 
-    def update_attendees(self,usernames_list_of_str):
+    def update_attendees(self,
+                         usernames_list_of_str:list,
+                         number_of_trials_closed:int):
 
         # To be executed after the .update method so that users are already defined
         cells = [] # to update
@@ -218,18 +213,28 @@ class RankDataBase:
         # Open pandas dataframe to locate elements
         df = pd.DataFrame.from_dict(values)
         df.set_index('username',inplace=True)
-        col = 3 # column with attendee count
-        attendee_label = 'attendances'
 
         # Search usernames
         for username in usernames_list_of_str:
             if username in df.index:
                 row = df.index.get_loc(username)+2 
-                value = df.loc[username,attendee_label]
+                # Update attendances number
+                col = 3 # column with attendee count
+                attendances_label = 'attendances'
+                value = df.loc[username,attendances_label]
                 if isinstance(value,int):
-                    cells.append(Cell(row=row, col=col, value=value+1)) # update trial
+                    cells.append(Cell(row=row, col=col, value=value+1))
                 else:
-                    cells.append(Cell(row=row, col=col, value=1)) # update trial
+                    cells.append(Cell(row=row, col=col, value=1))
+                # Update logs with 0 trials closed
+                if number_of_trials_closed == 0:
+                    col = 9 # column containing logs-with-0TC
+                    logs_with_0_TC_label = 'logs-with-0TC'
+                    value = df.loc[username,logs_with_0_TC_label]
+                    if isinstance(value,int):
+                        cells.append(Cell(row=row, col=col, value=value+1))
+                    else:
+                        cells.append(Cell(row=row, col=col, value=1))
 
         # Update worksheet
         set_in_batch(self.ws,cells)
@@ -250,7 +255,8 @@ class LogDataBase:
     def num_logs(self):
         values = get_in_batch(self.ws)
         if values:
-            return len(values) # check with/without blank line
+            urls_available = [a['url'] for a in values if a['url']!='']
+            return len(urls_available) # to handle the 'blank' row
         else:
             return 0
         
@@ -330,4 +336,5 @@ if __name__ == '__main__':
     logger.info('*** Run script database.py')
     # test2__update()
     # test1__slow_update()
-    ws = RankDataBase().ws
+    rw = RankDataBase().ws
+    lw = LogDataBase().ws

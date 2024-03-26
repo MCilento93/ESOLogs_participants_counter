@@ -49,10 +49,17 @@ class SpecialList:
     def __str__(self) -> str:
         return ', '.join(self.list_of_str)
     
+    def __len__(self) -> int:
+        return len(self.list)
+    
     @property
     def str(self):
         return str(self)
 
+    @property
+    def num(self):
+        return len(self)
+    
     @property
     def list_of_str(self):
         return [str(a) for a in self.list]
@@ -351,7 +358,7 @@ class Log:
 
     def get_attendees(self):
         if not self.is_valid:
-            return []
+            return SpecialList([])
         friendlies = self.json['friendlies']
         attendees = []
         logger.info(f'- Analyzing friendlies')
@@ -369,8 +376,8 @@ class Log:
         # Inizialization
         logger.info(f'Analyzing trials closed')
         if not self.is_valid:
-            self.attendees = []
-            self.trials_closed = []
+            self.attendees = SpecialList([])
+            self.trials_closed = SpecialList([])
             logger.warning(f'  Log not valid, no fights found.')
             return
         

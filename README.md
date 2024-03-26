@@ -8,7 +8,7 @@ Its raw architecture is herebelow sketched:
 * Google sheet database via [gspread](https://docs.gspread.org/en/latest/index.html) to store the output of the scrape
 * A discord bot that constantly keeps an eye on the eso-logs discord chat for new logs to scrape
 
-### Vocabulary
+## Vocabulary
 With reference to the game:
 | <!-- -->     	| <!-- -->                                                                                                             	|
 |--------------	|----------------------------------------------------------------------------------------------------------------------	|
@@ -28,11 +28,12 @@ With reference to this project:
 |---------------	|---------------------------------------------------------------------------------------------------------------------	|
 | Attendee      	| each human friendly appearing in the log. For being considered attendee, the trial has not to be necessarly closed. 	|
 | Winner        	| An attendee that closed a trial                                                                                     	|
+| Success rate  	| % of logs in which an attendee has closed with success at least a trial                            	|
 | Rank database 	| a big table of the database containing the number of attendances for every trial analyzed in the processed logs     	|
 | Log database  	| a big table containing information on all logs analyzed or not yet                                                 	|
-### Commands
 
-
+## Commands
+### Software
 * To **analyze and calculate the logs** from a file containing valid esologs urls (without any query to databases):
 ```
 :: If a txt holds the link, run in the project folder
@@ -54,7 +55,7 @@ python main.py process_logs
 python main.py discord
 ```
 
-### Tips
+### Tips on the software usage
 It is highly recommended to store the console output when dealing with many historical logs. Check the log files as well.
 ```
 python main.py analyze_logs_from_file txt/local.txt > txt/output.txt
@@ -64,5 +65,13 @@ python main.py discord > txt/output.txt
 ```
 Console output can be really helpful when dealing with high number of logs, since google API has limited number of requests (60 requests/min) and the process may take a while.
 
-### License
+## Discord
+* **/help**: gather general information on the bot, including this [README](https://github.com/MCilento93/esologs-counter/blob/main/README.md)
+* **/show_rank**: show the rank of the guild, sorted by number of attendances
+* **/process_logs**: process the unprocessed logs in the database (i.e. **only** those marked as 'N' in *processed* column). This will invoke an irreversible calculation. Be careful when using. For this reason, this command can be invoked only by developer and guild master.
+
+## Google sheet
+Coming soon
+
+## License
 This repository is licensed under [MIT License](LICENSE) (c) 2024 GitHub, Inc.

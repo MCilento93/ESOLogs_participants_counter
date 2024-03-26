@@ -44,6 +44,9 @@ TIMEZONE = timezone('Europe/Rome') # Set for logging
 LOCAL_TIME_NOW = datetime.datetime.now(TIMEZONE).astimezone() # Get tz info for nextcord
 TASK_LOOP_TIME = datetime.time(hour=5, minute=0, tzinfo=LOCAL_TIME_NOW.tzinfo)
 
+# Project
+LINK_TO_README = 'https://github.com/MCilento93/esologs-counter/blob/main/README.md'
+
 
 ### LOGGER
 logger = logging.getLogger(__name__)
@@ -80,19 +83,20 @@ def process_logs_in_db():
     urls = LogDataBase().get_unprocessed_logs()
     if urls == []:
         logger.info('All logs in the database have already been processed')
-        return
+        return 'all-logs-already-processed'
     for url in urls:
     # Calculate logs information
         log = Log(url)
         log.calculate_trials_closed()
+        rank_db=RankDataBase()
         for trial_closed in log.trials_closed.list:
     # Update RankDataBase
-            rank_db=RankDataBase()
             rank_db.update(trial_closed.usernames_list_of_str,trial_closed.name,log.datetime_str)
     # Update number of attendances
-        rank_db.update_attendees(log.attendees.list_of_str)
+        rank_db.update_attendees(log.attendees.list_of_str,log.trials_closed.num)
     # Update LogDataBase
         LogDataBase().mark_processed_log(log.url,log.status,log.trials_closed.str)
+    return f'procesed {len(urls)} new logs' 
 
 # Discord bot
 intents = nextcord.Intents(messages=True, guilds=True)
@@ -146,7 +150,7 @@ async def help(interaction: nextcord.Interaction):
     logger.info(f'{interaction.user.name} invoked /help')
     await interaction.followup.send(f"""
 👋 Greetings! I'm *{bot.user}* bot, here to account trials attendances in the guild analyzing [esologs.com](https://www.esologs.com/) urls!
-Click [here](https://github.com/MCilento93/esologs-counter/blob/main/README.md) for my README 📜
+Click [here]({LINK_TO_README}) for my README 📜
 
 **How I Help:**
 I will keep track of all trials in the chat {LINK_TO_CHANNEL}.
@@ -192,8 +196,11 @@ async def process_logs(interaction: nextcord.Interaction):
         message = f'  process_logs_in_db() starting ...'
         print(message)
         logger.info(message)
-        process_logs_in_db()
-        await interaction.followup.send(f"✅ Rank updated")
+        response = process_logs_in_db()
+        if response == 'all-logs-already-processed':
+            await interaction.followup.send('👌 All logs have already been processed')
+        else:
+            await interaction.followup.send(f"✅ Rank updated")
     else:
         await interaction.followup.send(f"🚫 You don't have permissions for update the rank")
         logger.error('  Something went wrong. Check logs')
