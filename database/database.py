@@ -24,7 +24,7 @@ GOOGLE_API_REFRESH_TIME = 60                    # s
 MAX_BACKOFF_TIME = GOOGLE_API_REFRESH_TIME+1    # s - with margins
 
 # Google sheet
-SPREADSHEET_NAME = 'esologs-counter-R01'
+SPREADSHEET_NAME = 'esologs-counter-R02'
 
 
 ### METHODS
@@ -219,8 +219,8 @@ class RankDataBase:
             if username in df.index:
                 row = df.index.get_loc(username)+2 
                 # Update attendances number
-                col = 3 # column with attendee count
                 attendances_label = 'attendances'
+                col = col = df.columns.get_loc(attendances_label)+2 # TBV
                 value = df.loc[username,attendances_label]
                 if isinstance(value,int):
                     cells.append(Cell(row=row, col=col, value=value+1))
@@ -228,8 +228,8 @@ class RankDataBase:
                     cells.append(Cell(row=row, col=col, value=1))
                 # Update logs with 0 trials closed
                 if number_of_trials_closed == 0:
-                    col = 9 # column containing logs-with-0TC
                     logs_with_0_TC_label = 'logs-with-0TC'
+                    col = col = df.columns.get_loc(logs_with_0_TC_label)+2 # TBV
                     value = df.loc[username,logs_with_0_TC_label]
                     if isinstance(value,int):
                         cells.append(Cell(row=row, col=col, value=value+1))

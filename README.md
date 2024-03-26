@@ -65,13 +65,15 @@ python main.py discord > txt/output.txt
 ```
 Console output can be really helpful when dealing with high number of logs, since google API has limited number of requests (60 requests/min) and the process may take a while.
 
+## Google sheet
+Coming soon
+
 ## Discord
 * **/help**: gather general information on the bot, including this [README](https://github.com/MCilento93/esologs-counter/blob/main/README.md)
 * **/show_rank**: show the rank of the guild, sorted by number of attendances
 * **/process_logs**: process the unprocessed logs in the database (i.e. **only** those marked as 'N' in *processed* column). This will invoke an irreversible calculation. Be careful when using. For this reason, this command can be invoked only by developer and guild master.
 
-## Google sheet
-Coming soon
+
 
 ## License
 This repository is licensed under [MIT License](LICENSE) (c) 2024 GitHub, Inc.
