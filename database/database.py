@@ -24,7 +24,7 @@ GOOGLE_API_REFRESH_TIME = 60                    # s
 MAX_BACKOFF_TIME = GOOGLE_API_REFRESH_TIME+1    # s - with margins
 
 # Google sheet
-SPREADSHEET_NAME = 'esologs-counter-R01'
+SPREADSHEET_NAME = 'esologs-counter-R02'
 
 
 ### METHODS
@@ -89,6 +89,9 @@ def set_in_batch(ws,cells:list):
 ### CLASSES
 class RankDataBase:
 
+    default_col = 1 # Num of col for google sheet. Only used for checks
+    default_blank_line = 'This row has been intentionally left blank'
+
     def __init__(self):
         self.gc = gspread.service_account(filename=GOOGLE_KEY_DIR)
         self.sh = self.gc.open(SPREADSHEET_NAME) # spreadsheet
@@ -98,51 +101,42 @@ class RankDataBase:
     def url_to_worksheet(self):
         return self.ws.url
     
-    def find_username_row(self,username,or_insert=False):
-        row = find_row_by_val(self.ws,username)
-        if row==None and or_insert:
-            append_row(self.ws,username)          
-            logger.info(f'Added new user to the *{self.ws.title}* worksheet: {username}')
-            row = find_row_by_val(self.ws,username)
-        return row
+    @property
+    def user_num(self):
+        values = get_in_batch(self.ws)
+        if values == []:
+            return 0
+        df = pd.DataFrame.from_dict(values)
+        df.set_index('username',inplace=True)
+        return sum(1 for i in df.index.tolist() if i not in ['',RankDataBase.default_blank_line])
     
-    def find_trial_col(self,trial_name,or_insert=False):
-        col = find_col_by_val(self.ws,trial_name)
-        if col==None and or_insert:
-            append_col(self.ws,trial_name)          
-            logger.info(f'Added new trial to the *{self.ws.title}* worksheet: {trial_name}')
-            col = find_row_by_val(self.ws,trial_name)
-        return col
-
     def start_up_procedure(self):
-        set_value(self.ws,2,1,value="This row has been intentionally left empty")
-        logger.warning('  Dumb value added in *rank* db as username to sustain update procedure')
-
-    def slow_update(self,usernames:list,trial_name,time_str):
-        logger.warning(f'Slow update procedure started ({trial_name} of {time_str})')
-        col = self.find_trial_col(trial_name,or_insert=True)
-        for username in usernames:
-            row = self.find_username_row(username,or_insert=True)
-            current_counter = get_numeric_value(self.ws,row,col)
-            set_value(self.ws,row,col,current_counter+1)
-            set_value(self.ws,row,2,time_str)
-            logger.info(f'+1 @{trial_name} for {username}')
+        set_value(self.ws,2,RankDataBase.default_col,value=RankDataBase.default_blank_line)
+        logger.warning('  Dumb value added in *rank* db (cell 2,1) to start update procedure')
 
     def get_ascii_table(self):
         values = get_in_batch(self.ws)
-        # Startup for an empty worksheet
+
+        # Return if the database is empty
         if values == []:
             return None
 
         # Open pandas dataframe to locate elements
         df = pd.DataFrame.from_dict(values)
-        df = df[df['attendances']!='']                                              # remove blank row
+        df = df[(df.iloc[:,RankDataBase.default_col-1]!=RankDataBase.default_blank_line) & (df['username']!='')] # restrict df to rows with username and get rid of black line
+        df = df[df['attendances']!=''] # remove users with no attendances
+        
+        # Return if there are no attendances
+        if df.empty:
+            return None
+        
+        # Setting up updated rank
         df.sort_values(by=['attendances'],ascending=False, inplace=True)            # sort by attendances
         df_subset = df[['username','attendances','n','v','v HM+1+2+3']][0:10]       # up to 10th on the ranking
         df_subset['Pos.'] = df_subset.reset_index().index + 1                       # Add rank position
         df_subset = df_subset[['Pos.','username','attendances','n','v','v HM+1+2+3']]# Change column order
-        # df_subset.set_index('Pos.',inplace=True)
-        # df_subset.to_markdown(tablefmt="grid")                                    # intresting alternative with the module 'tabulate'
+        
+        # Deliver outcomes
         header = df_subset.columns.tolist()
         body = df_subset.values.tolist()
         output = t2a(
@@ -152,27 +146,31 @@ class RankDataBase:
         )
         return output
 
-    def update(self,usernames:list,trial_name,time_str):
+    def update(self,usernames:list,
+                    trial_name:str,
+                    time_str:str):
         logger.info(f'*rank* db - update procedure started ({trial_name} of {time_str})')
         cells = [] # to update
         values = get_in_batch(self.ws)
 
-        # Startup for an empty worksheet
+        # Start-up if the database is empty
         if values == []:
             self.start_up_procedure()
             values = get_in_batch(self.ws)
             
         # Open pandas dataframe to locate elements
         df = pd.DataFrame.from_dict(values)
+        col_username = df.columns.get_loc('username')+1
+        col_timelastlog = df.columns.get_loc('time-last-log')+1
         df.set_index('username',inplace=True)
-        num_of_users = df.index.size
-        last_user_row = num_of_users+1
-        last_trial_col = df.columns.size+1
+        num_edited_rows = df.index.size
+        last_edited_row = num_edited_rows + 1
+        last_edited_col = df.columns.size+1
         flag_add_trial = False
 
         # Detect column of the trial
         if trial_name not in df.columns.values:
-            col = last_trial_col+1
+            col = last_edited_col+1
             cells.append(Cell(row=1, col=col, value=trial_name))
             flag_add_trial=True
             df[trial_name]=''
@@ -184,27 +182,32 @@ class RankDataBase:
             if username in df.index:
                 row = df.index.get_loc(username)+2 
                 value = df.loc[username,trial_name]
+                timelastlog_current = df.loc[username,'time-last-log']
+                if time_str >= timelastlog_current:
+                    time_str_to_set = time_str
+                else:
+                    time_str_to_set = timelastlog_current
                 if isinstance(value,int):
                     cells.append(Cell(row=row, col=col, value=value+1)) # update trial
                 else:
                     cells.append(Cell(row=row, col=col, value=1)) # update trial
-                cells.append(Cell(row=row, col=2, value=time_str)) # update time-last-log
+                # cells.append(Cell(row=row, col=col_timelastlog, value=time_str)) # update time-last-log
             else:
-                row = last_user_row+1
-                cells.append(Cell(row=row, col=1, value=username)) # update username  
+                row = last_edited_row+1
+                time_str_to_set = time_str
+                cells.append(Cell(row=row, col=col_username, value=username)) # update username  
                 cells.append(Cell(row=row, col=col, value=1)) # update trial
-                cells.append(Cell(row=row, col=2, value=time_str)) # update time-last-log
-                last_user_row = last_user_row + 1 
-
+                # cells.append(Cell(row=row, col=col_timelastlog, value=time_str)) # update time-last-log
+                last_edited_row = last_edited_row + 1 
+            cells.append(Cell(row=row, col=col_timelastlog, value=time_str_to_set)) # update time-last-log
         # Update worksheet
         set_in_batch(self.ws,cells)
         if flag_add_trial:
             logger.info(f'  New column with trial {trial_name} added')
         logger.info(f"{trial_name} succesfully added to the *rank* database")
 
-    def update_attendees(self,
-                         usernames_list_of_str:list,
-                         number_of_trials_closed:int):
+    def update_attendees(self,usernames:list,
+                              number_of_trials_closed:int):
 
         # To be executed after the .update method so that users are already defined
         cells = [] # to update
@@ -212,35 +215,36 @@ class RankDataBase:
 
         # Open pandas dataframe to locate elements
         df = pd.DataFrame.from_dict(values)
+        col_attendances = df.columns.get_loc('attendances')+1
+        col_logs_0_TC = df.columns.get_loc('logs-with-0TC')+1
         df.set_index('username',inplace=True)
 
         # Search usernames
-        for username in usernames_list_of_str:
+        for username in usernames:
             if username in df.index:
                 row = df.index.get_loc(username)+2 
                 # Update attendances number
-                col = 3 # column with attendee count
-                attendances_label = 'attendances'
-                value = df.loc[username,attendances_label]
+                value = df.loc[username,'attendances']
                 if isinstance(value,int):
-                    cells.append(Cell(row=row, col=col, value=value+1))
+                    cells.append(Cell(row=row, col=col_attendances, value=value+1))
                 else:
-                    cells.append(Cell(row=row, col=col, value=1))
+                    cells.append(Cell(row=row, col=col_attendances, value=1))
                 # Update logs with 0 trials closed
                 if number_of_trials_closed == 0:
-                    col = 9 # column containing logs-with-0TC
-                    logs_with_0_TC_label = 'logs-with-0TC'
-                    value = df.loc[username,logs_with_0_TC_label]
+                    value = df.loc[username,'logs-with-0TC']
                     if isinstance(value,int):
-                        cells.append(Cell(row=row, col=col, value=value+1))
+                        cells.append(Cell(row=row, col=col_logs_0_TC, value=value+1))
                     else:
-                        cells.append(Cell(row=row, col=col, value=1))
+                        cells.append(Cell(row=row, col=col_logs_0_TC, value=1))
 
         # Update worksheet
         set_in_batch(self.ws,cells)
         logger.info(f'  Attendances number updated in *rank* db')
 
 class LogDataBase:
+
+    default_col = 1 # Num of col for google sheet. Only used for checks
+    default_blank_line = 'This row has been intentionally left blank'
 
     def __init__(self):
         self.gc = gspread.service_account(filename=GOOGLE_KEY_DIR)
@@ -277,7 +281,7 @@ class LogDataBase:
             logger.info(f'  {title} of {strftime} correctly loaded in *logs* worksheet ({url})')
 
     def start_up_procedure(self):
-        set_value(self.ws,2,1,value="This row has been intentionally left empty")
+        set_value(self.ws,2,LogDataBase.default_col,value=LogDataBase.default_blank_line)
         logger.warning('Dumb value added to *log* database for startup procedure')
 
     def get_unprocessed_logs(self):
@@ -324,6 +328,7 @@ def test2__update():
 def test3__log_update():
     pass
 
+
 ### MAIN
 if __name__ == '__main__':
     
@@ -336,5 +341,7 @@ if __name__ == '__main__':
     logger.info('*** Run script database.py')
     # test2__update()
     # test1__slow_update()
-    rw = RankDataBase().ws
-    lw = LogDataBase().ws
+    r = RankDataBase()
+    rw = r.ws
+    l = LogDataBase()
+    lw = l.ws
