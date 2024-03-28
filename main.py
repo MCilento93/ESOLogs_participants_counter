@@ -5,7 +5,7 @@
 # Date of creation: mar-2024
 #
 # Description:
-#   Main for multiple commands. Default run: discord-bot layer.
+#   Main for discord bot and shell commands.
 #
 # -----------------------------------------------------------------------------
 
@@ -148,12 +148,13 @@ I have updated the [logs-database]({logs_worksheet_url}) 💾
 async def help(interaction: nextcord.Interaction):
     await interaction.response.defer()
     logger.info(f'{interaction.user.name} invoked /help')
+    rank_worksheet_url = RankDataBase().url_to_worksheet
     await interaction.followup.send(f"""
 👋 Greetings! I'm *{bot.user}* bot, here to account trials attendances in the guild analyzing [esologs.com](https://www.esologs.com/) urls!
-Click [here]({LINK_TO_README}) for my README 📜
+Click [here]({LINK_TO_README}) for my README 📜 and [here]({rank_worksheet_url}) to access the most updated rank 🧮 of the attendees.
 
 **How I Help:**
-I will keep track of all trials in the chat {LINK_TO_CHANNEL}.
+My role is to keep track of all trials in the chat {LINK_TO_CHANNEL}. My slash commands:
 **</show_rank:1221026522983436301>:** Use me to get the update rank of the community
 **</process_logs:1221026519745429585>:** With this function I will calculate unprocessed logs (if any)
 
@@ -176,7 +177,7 @@ async def show_rank(interaction: nextcord.Interaction):
 
     # Send reply
     if table_ascii:
-        await interaction.followup.send(f"**Updated rank of the trials 🏆**```\n{table_ascii}\n```\n🧮 Click [here]({rank_worksheet_url}) for full table",suppress_embeds=True)
+        await interaction.followup.send(f"**Updated rank of the trials 🏆**```\n{table_ascii}\n```\n🧮 Click [here]({rank_worksheet_url}) for full data",suppress_embeds=True)
     else:
         logger.error('Empty *rank* database ... null data fetched in /show_rank slash command')
         await interaction.followup.send(f"🙇‍♀️ Rank is empty, check [database]({rank_worksheet_url}) and inform admins")
@@ -251,5 +252,8 @@ if __name__ == '__main__':
         handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s @%(name)-23s: %(message)s',
                                                '%Y/%m/%d %H:%M'))
         logger_discord.addHandler(handler)
-        bot.run(config['DISCORD']['TOKEN'])
+        try:
+            bot.run(config['DISCORD']['TOKEN'])
+        except (KeyboardInterrupt,RuntimeError):
+            bot.close()
         logger.info('*** END OF process_logs PROCEDURE')
