@@ -32,8 +32,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 # Guild
-DEVELOPER_ID = config['GUILD']['DEVELOPER_ID']
-ADMIN_ID = config['GUILD']['ADMIN_ID']
+DEVELOPER_ID = int(config['GUILD']['DEVELOPER_ID'])
+ADMIN_ID = int(config['GUILD']['ADMIN_ID'])
 LIST_OF_ADMINS = [DEVELOPER_ID,ADMIN_ID]
 SERVER_ID = config['GUILD']['SERVER_ID']
 CHANNEL_ID = config['GUILD']['CHANNEL_ID']
@@ -124,6 +124,12 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    # Check if private message
+    if isinstance(message.channel,nextcord.DMChannel):
+        logger.info(f'{message.author.name} typed privately: {message.content}')
+        return
+    
+    # Check if in the guild's chat
     if message.guild.id == int(SERVER_ID) and message.channel.id == int(CHANNEL_ID) and message.author != bot.user:
         logger.info(f"{message.author} typed: {message.content}")
         urls = extract_esologs_urls_from_str(message.content)
@@ -193,7 +199,7 @@ async def process_logs(interaction: nextcord.Interaction):
         return
 
     # Update rank database
-    if interaction.user.id in LIST_OF_ADMINS+[interaction.guild.owner_id]:
+    if interaction.user.id in LIST_OF_ADMINS:
         message = f'  process_logs_in_db() starting ...'
         print(message)
         logger.info(message)
