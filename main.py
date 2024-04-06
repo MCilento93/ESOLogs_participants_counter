@@ -46,6 +46,7 @@ TASK_LOOP_TIME = datetime.time(hour=5, minute=0, tzinfo=LOCAL_TIME_NOW.tzinfo)
 
 # Project
 LINK_TO_README = 'https://github.com/MCilento93/esologs-counter/blob/main/README.md'
+GOOGLESHEET_PUBLIC_URL = config['GOOGLE']['GOOGLESHEET_PUBLIC_URL']
 
 
 ### LOGGER
@@ -144,7 +145,7 @@ async def on_message(message):
                                             log.code,               # D - code
                                             log.url,                # E - url
                                             log.get_attendees().str)# I - attendees
-            logs_worksheet_url = LogDataBase().url_to_worksheet
+            logs_worksheet_url = GOOGLESHEET_PUBLIC_URL
             await message.reply(f"""
 Valid log(s) found! Thank you {message.author} 🙏🏻
 I have updated the [logs-database]({logs_worksheet_url}) 💾
@@ -154,7 +155,7 @@ I have updated the [logs-database]({logs_worksheet_url}) 💾
 async def help(interaction: nextcord.Interaction):
     await interaction.response.defer()
     logger.info(f'{interaction.user.name} invoked /help')
-    rank_worksheet_url = RankDataBase().url_to_worksheet
+    rank_worksheet_url = GOOGLESHEET_PUBLIC_URL
     await interaction.followup.send(f"""
 👋 Greetings! I'm *{bot.user}* bot, here to account trials attendances in the guild analyzing [esologs.com](https://www.esologs.com/) urls!
 Click [here]({LINK_TO_README}) for my README 📜 and [here]({rank_worksheet_url}) to access the most updated rank 🧮 of the attendees.
@@ -179,7 +180,7 @@ async def show_rank(interaction: nextcord.Interaction):
 
     # Get table from database
     table_ascii = RankDataBase().get_ascii_table()
-    rank_worksheet_url = RankDataBase().url_to_worksheet
+    rank_worksheet_url = GOOGLESHEET_PUBLIC_URL
 
     # Send reply
     if table_ascii:

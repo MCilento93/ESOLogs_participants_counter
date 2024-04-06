@@ -299,35 +299,6 @@ class LogDataBase:
         set_value(self.ws,row,col=8,value=trials_closed_str)    # update name of trial closed
         logger.info(f'Processed and status of the log updated for {trials_closed_str}')
 
-    
-### TESTs
-def test1__slow_update():
-    logger.info(' * Test 1 started')
-    r = RankDataBase()
-    username_list = ['a','b','c','d','e','f','g','h','i','j','mata']
-    trial_list=['nAA','vAA','vAA HM','vHRC','nAA','nAA','vHRC','vHRC','vHRC','vHRC']
-    import time
-    start = time.time()
-    for trial in trial_list:
-        r.slow_update(username_list,trial,'1-1-1070')
-    end = time.time()
-    logger.info(f'Test 1 completed in {end-start}s')
-
-def test2__update():
-    logger.info(' * Test 2 started')
-    r = RankDataBase()
-    username_list = ['a','b','c','d','e','f','g','h','i','j','mata']
-    trial_list=['nAA','vAA','vAA HM','vHRC','nAA','nAA','vHRC','vHRC','vHRC','vHRC','trialU41']
-    import time
-    start = time.time()
-    for trial in trial_list:
-        r.update(username_list,trial,'1-1-1070')
-    end = time.time()
-    logger.info(f'Test 2 completed in {end-start}s')
-
-def test3__log_update():
-    pass
-
 
 ### MAIN
 if __name__ == '__main__':
@@ -339,8 +310,7 @@ if __name__ == '__main__':
                     format='%(asctime)s %(levelname)s @%(name)s: %(message)s',
                     datefmt='%Y/%m/%d %H:%M')
     logger.info('*** Run script database.py')
-    # test2__update()
-    # test1__slow_update()
+  
     r = RankDataBase()
     rw = r.ws
     l = LogDataBase()
