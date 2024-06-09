@@ -148,6 +148,10 @@ class Zone:
             self.name_short = 'SE'
             self.final_boss_id   = 57
             self.final_boss_name = 'Ansuul the Tormentor'
+        elif name in ("Lucent Citadel",'LC'):
+            self.name_short = 'LC'
+            self.final_boss_id   = 60
+            self.final_boss_name = 'Xoryn'
         else:
             self.is_valid = False
             self.name_short = None
